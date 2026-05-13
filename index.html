@@ -2,303 +2,917 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>GLAVBUH.AI — Умная бухгалтерия</title>
 <style>
+:root{
+  --bg:#F6F8FA;--surface:#fff;--border:#E5E7EB;
+  --text:#111827;--text2:#6B7280;--text3:#9CA3AF;
+  --accent:#2563EB;--ah:#1D4ED8;--alt:#EFF6FF;
+  --ok:#16A34A;--okl:#F0FDF4;
+  --warn:#F59E0B;--warnl:#FFFBEB;
+  --err:#DC2626;--errl:#FEF2F2;
+  --nav:#1E293B;--navt:#94A3B8;
+  --r:8px;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-text-size-adjust:100%}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px}
+a{color:var(--accent);text-decoration:none}
+
+/* SCREENS */
 .screen{display:none;min-height:100vh}
-.screen.active{display:block}
-:root{--bg:#F6F8FA;--surface:#fff;--border:#E5E7EB;--text:#111827;--text2:#6B7280;--text3:#9CA3AF;--accent:#2563EB;--accent-h:#1D4ED8;--accent-lt:#EFF6FF;--ok:#16A34A;--ok-lt:#F0FDF4;--warn:#F59E0B;--warn-lt:#FFFBEB;--err:#DC2626;--err-lt:#FEF2F2;--nav:#1E293B;--nav-txt:#94A3B8;--r:8px}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Inter,Arial,sans-serif;background:var(--bg);color:var(--text);font-size:14px;height:100vh;overflow:hidden}
-.login-wrap{display:flex;align-items:center;justify-content:center;height:100vh}
-.login-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:40px;width:420px;box-shadow:0 4px 24px rgba(0,0,0,.06)}
-.login-logo{font-size:22px;font-weight:800;color:var(--accent);margin-bottom:4px;letter-spacing:.5px}
-.login-sub{font-size:13px;color:var(--text2);margin-bottom:28px}
-.form-group{margin-bottom:14px}
-.form-label{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;display:block}
-.form-input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r);font-size:14px;color:var(--text);background:var(--surface);outline:none;transition:border .15s}
-.form-input:focus{border-color:var(--accent)}
-select.form-input{cursor:pointer}
-.status-row{display:flex;gap:8px;margin:16px 0;flex-wrap:wrap}
-.status-dot{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text2);padding:5px 10px;border-radius:6px;background:var(--bg);border:1px solid var(--border)}
-.dot{width:7px;height:7px;border-radius:50%}
-.dot.g{background:var(--ok)}.dot.y{background:var(--warn)}.dot.r{background:var(--err)}
-.app{display:none;height:100vh}
-.nav{width:232px;min-width:232px;background:var(--nav);display:flex;flex-direction:column;height:100vh;overflow-y:auto}
-.nav-logo{padding:18px 16px 14px;font-size:16px;font-weight:800;color:#F8FAFC;border-bottom:1px solid rgba(255,255,255,.07);letter-spacing:.5px}
-.nav-logo em{color:#60A5FA;font-style:normal}
-.nav-sec{padding:6px 0}
-.nav-lbl{font-size:10px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.8px;padding:8px 16px 3px}
-.nav-item{display:flex;align-items:center;gap:9px;padding:8px 16px;color:var(--nav-txt);font-size:13px;cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all .12s}
-.nav-item:hover{background:rgba(255,255,255,.06);color:#CBD5E1}
-.nav-item.active{background:rgba(96,165,250,.15);color:#93C5FD;font-weight:600}
-.nav-item .ic{font-size:14px;width:18px;text-align:center;flex-shrink:0}
-.nbadge{margin-left:auto;background:var(--err);color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px}
-.nav-sep{border:none;border-top:1px solid rgba(255,255,255,.07);margin:4px 0}
-.nav-footer{margin-top:auto;border-top:1px solid rgba(255,255,255,.07);padding:12px 16px;display:flex;align-items:center;gap:10px}
-.nav-av{width:30px;height:30px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
-.nav-user{font-size:12px;color:#CBD5E1;line-height:1.4}
-.nav-user small{font-size:10px;color:#64748B;display:block}
-.cw{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.topbar{height:50px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:10px;flex-shrink:0}
-.tb-co{font-size:13px;font-weight:700;color:var(--text)}
-.tb-role{background:var(--accent-lt);color:var(--accent);font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;cursor:pointer}
-.tb-spacer{flex:1}
-.tb-1c{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2);padding:4px 9px;background:var(--bg);border-radius:6px;border:1px solid var(--border)}
-.tb-btn{padding:6px 14px;border-radius:var(--r);border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all .12s;display:flex;align-items:center;gap:5px}
-.tb-btn.primary{background:var(--accent);color:#fff}
-.tb-btn.primary:hover{background:var(--accent-h)}
-.tb-btn.ghost{background:none;color:var(--text2);border:1.5px solid var(--border)}
-.tb-btn.ghost:hover{background:var(--bg)}
-.tb-av{width:30px;height:30px;border-radius:50%;background:#7C3AED;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;cursor:pointer;flex-shrink:0}
-.main{flex:1;overflow-y:auto;padding:22px 24px}
-.page{display:none}
-.page.active{display:block}
-.page-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px}
-.page-title{font-size:20px;font-weight:700}
-.page-sub{font-size:13px;color:var(--text2);margin-top:3px}
-.btn-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.btn{padding:7px 15px;border-radius:var(--r);border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all .12s;display:inline-flex;align-items:center;gap:5px}
+.screen.active{display:flex;flex-direction:column}
+#screen-login.active{display:flex;align-items:center;justify-content:center;background:var(--bg)}
+
+/* LOGIN */
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.login-brand{text-align:center;margin-bottom:28px}
+.login-logo{width:56px;height:56px;background:var(--accent);color:#fff;border-radius:14px;font-size:20px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px}
+.login-name{font-size:22px;font-weight:800;color:var(--text)}
+.login-sub{font-size:13px;color:var(--text2);margin-top:4px}
+.role-tabs{display:flex;gap:4px;background:var(--bg);border-radius:8px;padding:4px;margin-bottom:20px}
+.role-tab{flex:1;padding:8px;border:none;background:transparent;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text2);transition:.15s}
+.role-tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.1);font-weight:600}
+.inp{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r);font-size:14px;color:var(--text);background:var(--surface);outline:none;transition:.15s}
+.inp:focus{border-color:var(--accent)}
+.lbl{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:5px;display:block}
+.fg{margin-bottom:14px}
+.login-opts{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;font-size:13px}
+
+/* BUTTONS */
+.btn{padding:8px 16px;border-radius:var(--r);border:none;cursor:pointer;font-size:13px;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:.15s}
 .btn:hover{filter:brightness(.93)}
-.bp{background:var(--accent);color:#fff}.bs{background:var(--surface);color:var(--text);border:1.5px solid var(--border)}.bd{background:var(--err);color:#fff}.bsuc{background:var(--ok);color:#fff}
-.btn-sm{padding:4px 10px;font-size:12px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:16px}
-.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.card-hdr h3{font-size:13px;font-weight:700}
-.sg{display:grid;gap:14px;margin-bottom:18px}
-.sg4{grid-template-columns:repeat(4,1fr)}.sg3{grid-template-columns:repeat(3,1fr)}.sg2{grid-template-columns:1fr 1fr}
-.sc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px}
-.sc .lbl{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
-.sc .val{font-size:20px;font-weight:700;margin-bottom:3px}
-.sc .sub{font-size:11px;color:var(--text2)}
-.sc .sub.up{color:var(--ok)}.sc .sub.dn{color:var(--err)}
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap}
-.bok{background:var(--ok-lt);color:var(--ok)}.bwarn{background:var(--warn-lt);color:#B45309}.berr{background:var(--err-lt);color:var(--err)}.binfo{background:var(--accent-lt);color:var(--accent)}.bgray{background:#F3F4F6;color:var(--text2)}
+.btn-p{background:var(--accent);color:#fff}
+.btn-s{background:var(--surface);color:var(--text);border:1.5px solid var(--border)}
+.btn-s:hover{background:var(--bg)}
+.btn-g{background:transparent;color:var(--text2);border:1.5px solid var(--border)}
+.btn-e{background:var(--err);color:#fff}
+.btn-ok{background:var(--ok);color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-full{width:100%;justify-content:center;padding:12px;font-size:15px}
+.btn-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:252px;background:var(--nav);display:flex;flex-direction:column;z-index:300;transform:translateX(-252px);transition:transform .22s ease}
+.sidebar.open{transform:translateX(0)}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:299}
+.sb-overlay.on{display:block}
+.sb-head{display:flex;align-items:center;justify-content:space-between;padding:18px 14px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-brand{display:flex;align-items:center;gap:10px}
+.sb-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.sb-name{font-size:15px;font-weight:700;color:#F1F5F9}
+.sb-x{background:none;border:none;color:var(--navt);font-size:20px;cursor:pointer;padding:2px 6px;line-height:1}
+.sb-user{display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid rgba(255,255,255,.07)}
+.sb-av{width:38px;height:38px;background:var(--accent);border-radius:50%;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-uname{font-size:13px;font-weight:600;color:#F1F5F9}
+.sb-urole{font-size:11px;color:var(--navt)}
+.sb-switch{background:rgba(255,255,255,.1);border:none;color:#CBD5E1;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px;margin-left:auto}
+.sb-nav{flex:1;overflow-y:auto;padding:6px 8px}
+.ni{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:6px;cursor:pointer;color:var(--navt);font-size:13px;transition:.12s;border:none;background:none;width:100%;text-align:left}
+.ni:hover{background:rgba(255,255,255,.07);color:#CBD5E1}
+.ni.active{background:rgba(37,99,235,.25);color:#93C5FD;font-weight:600}
+.ni-ic{width:18px;text-align:center;flex-shrink:0;font-size:14px}
+.sb-sep{border:none;border-top:1px solid rgba(255,255,255,.07);margin:6px 0}
+.sb-foot{padding:10px 8px;border-top:1px solid rgba(255,255,255,.08)}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;flex-shrink:0}
+.tb-menu{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text2);padding:2px 6px;line-height:1}
+.tb-title{font-size:16px;font-weight:600;flex:1}
+.tb-badge{background:var(--alt);color:var(--accent);font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px}
+
+/* PAGE CONTENT */
+.pc{padding:16px;flex:1;overflow-y:auto}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+.ph-l h1{font-size:20px;font-weight:700}
+.ph-l p{font-size:13px;color:var(--text2);margin-top:3px}
+
+/* GRID */
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+@media(max-width:700px){.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}.g2{grid-template-columns:1fr}}
+
+/* STAT CARD */
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+.sc-lbl{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.sc-val{font-size:22px;font-weight:700;margin-bottom:4px;line-height:1.2}
+.sc-sub{font-size:12px;color:var(--text2)}
+.sc-up{color:var(--ok)}.sc-dn{color:var(--err)}
+.sc-icon{font-size:24px;margin-bottom:8px}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;margin-bottom:16px}
+.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-hdr h3{font-size:14px;font-weight:700}
+
+/* TABLE */
 .tw{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:9px 14px;color:var(--text2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:1.5px solid var(--border);background:var(--bg)}
-td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text)}
+th{text-align:left;padding:9px 14px;color:var(--text2);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border-bottom:1.5px solid var(--border);background:var(--bg)}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#FAFBFC}
 .tdl{color:var(--accent);cursor:pointer;font-weight:500}
-.frow{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
-.fbtn{padding:5px 12px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;cursor:pointer;background:var(--surface);color:var(--text2);font-weight:500;transition:all .12s}
-.fbtn.act{background:var(--accent-lt);border-color:var(--accent);color:var(--accent)}
-.sinp{padding:7px 12px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px;outline:none;background:var(--surface)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap}
+.b-ok{background:var(--okl);color:var(--ok)}
+.b-warn{background:var(--warnl);color:#92400E}
+.b-err{background:var(--errl);color:var(--err)}
+.b-info{background:var(--alt);color:var(--accent)}
+.b-gray{background:#F3F4F6;color:var(--text2)}
+
+/* PROGRESS */
+.prog-wrap{margin:6px 0}
+.prog-hdr{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:4px}
+.prog{background:#E5E7EB;border-radius:4px;height:6px}
+.prog-bar{height:6px;border-radius:4px}
+.prog-bar.blue{background:var(--accent)}
+.prog-bar.ok{background:var(--ok)}
+.prog-bar.warn{background:var(--warn)}
+.prog-bar.err{background:var(--err)}
+
+/* FILTER BAR */
+.fbar{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.ftab{padding:5px 12px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;background:var(--surface);color:var(--text2);transition:.12s}
+.ftab.active{background:var(--alt);border-color:var(--accent);color:var(--accent)}
+.sinp{padding:7px 12px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px;outline:none;background:var(--surface);color:var(--text)}
 .sinp:focus{border-color:var(--accent)}
-.risk-h{color:var(--err);font-size:12px;font-weight:700}.risk-m{color:#D97706;font-size:12px;font-weight:700}.risk-l{color:var(--ok);font-size:12px;font-weight:700}
-.progress{background:#E5E7EB;border-radius:4px;height:5px;margin:5px 0}
-.pbar{height:5px;border-radius:4px}.pbar.blue{background:var(--accent)}.pbar.ok{background:var(--ok)}.pbar.warn{background:var(--warn)}.pbar.err{background:var(--err)}
+
+/* STEPS */
 .step-list{display:flex;flex-direction:column;gap:8px}
-.step{display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg)}
-.snum{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;flex-shrink:0}
-.snum.done{background:var(--ok)}.snum.act{background:var(--accent)}.snum.wait{background:#D1D5DB;color:var(--text2)}.snum.err{background:var(--err)}
-.step-body{flex:1}
-.step-body .t{font-size:13px;font-weight:500}
-.step-body .s{font-size:11px;color:var(--text2);margin-top:2px}
-.notif-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);align-items:flex-start}
-.notif-item:last-child{border-bottom:none}
-.nic{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.nic.info{background:var(--accent-lt)}.nic.warn{background:var(--warn-lt)}.nic.err{background:var(--err-lt)}.nic.ok{background:var(--ok-lt)}
-.nb{flex:1}
-.nb .nt{font-size:13px;font-weight:600;margin-bottom:2px}
-.nb .ns{font-size:12px;color:var(--text2)}
-.nt-time{font-size:11px;color:var(--text3);padding-top:2px;white-space:nowrap}
-.chat-panel{position:fixed;right:0;top:0;bottom:0;width:360px;background:var(--surface);border-left:1px solid var(--border);display:none;flex-direction:column;z-index:100;box-shadow:-4px 0 20px rgba(0,0,0,.08)}
-.chat-panel.open{display:flex}
-.cp-hdr{padding:13px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.cp-hdr h3{font-size:14px;font-weight:700}
-.cp-hdr small{font-size:11px;color:var(--ok);margin-top:1px;display:block}
-.cp-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
-.msg{max-width:88%;padding:10px 13px;border-radius:10px;font-size:13px;line-height:1.5}
-.msg.bot{background:var(--bg);border:1px solid var(--border);align-self:flex-start}
-.msg.user{background:var(--accent);color:#fff;align-self:flex-end}
-.msg-card{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:13px;align-self:flex-start;max-width:94%}
-.msg-card-title{font-weight:700;margin-bottom:8px;color:var(--accent);display:flex;align-items:center;gap:6px}
-.msg-card-rows{font-size:12px;margin-bottom:10px}
-.msg-card-rows div{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border)}
-.msg-card-rows div:last-child{border-bottom:none}
-.msg-card-rows span:first-child{color:var(--text2)}
-.msg-card-rows span:last-child{font-weight:600}
-.cp-inp{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px}
-.cp-inp input{flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--r);font-size:13px;outline:none}
-.cp-inp input:focus{border-color:var(--accent)}
-.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:center;justify-content:center}
-.modal-ov.open{display:flex}
-.modal{background:var(--surface);border-radius:12px;padding:28px;width:460px;max-width:92vw;box-shadow:0 8px 32px rgba(0,0,0,.16)}
-.modal-title{font-size:16px;font-weight:700;margin-bottom:6px}
-.modal-body{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:20px}
-.modal-confirm{background:var(--accent-lt);border:1px solid #BFDBFE;border-radius:var(--r);padding:14px;margin-bottom:16px;font-size:13px}
-.modal-btns{display:flex;gap:8px;justify-content:flex-end}
-.sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.sec-hdr h3{font-size:14px;font-weight:700}
-.task-row{display:flex;align-items:center;gap:10px;padding:9px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:7px}
-.tpri{width:5px;min-height:34px;border-radius:3px;flex-shrink:0}
-.tpri.h{background:var(--err)}.tpri.m{background:var(--warn)}.tpri.l{background:var(--ok)}
-.task-txt{flex:1}
-.task-txt .t{font-size:13px;font-weight:500}
-.task-txt .s{font-size:11px;color:var(--text2);margin-top:2px}
-.cal-ev{display:flex;gap:12px;align-items:center;padding:11px 16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px}
-.cal-stripe{width:4px;min-height:36px;border-radius:2px;flex-shrink:0}
-.cal-date{font-weight:700;font-size:13px;min-width:80px}
-.cal-b .t{font-weight:600;font-size:13px}
-.cal-b .s{font-size:11px;color:var(--text2);margin-top:2px}
-.settings-row{display:grid;grid-template-columns:160px 1fr;gap:12px;align-items:center;margin-bottom:12px}
-.settings-lbl{font-size:13px;color:var(--text2)}
-.rbadge{display:inline-flex;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:700}
-.rbh{background:#FEF2F2;color:var(--err);border:1px solid #FECACA}
-.rbm{background:#FFFBEB;color:#B45309;border:1px solid #FDE68A}
-.rbl{background:#F0FDF4;color:var(--ok);border:1px solid #BBF7D0}
-.doc-prev{background:#1E293B;border-radius:var(--r);min-height:180px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:#64748B;font-size:13px}
-.check-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
-.check-row:last-child{border-bottom:none}
-.chk-ok{color:var(--ok)}.chk-err{color:var(--err)}.chk-warn{color:var(--warn)}
-.ai-banner{background:linear-gradient(135deg,#EFF6FF,#E0F2FE);border:1px solid #BFDBFE;border-radius:10px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
-.ai-banner-ic{font-size:22px}
-.ai-banner-txt{font-size:13px;line-height:1.5;color:var(--text)}
-.ai-banner-txt b{color:var(--accent)}
+.step{display:flex;align-items:center;gap:12px;padding:11px 14px;border:1px solid var(--border);border-radius:var(--r);background:var(--surface)}
+.step.done{background:var(--okl);border-color:#BBF7D0}
+.step.err{background:var(--errl);border-color:#FECACA}
+.step.active-step{background:var(--alt);border-color:#BFDBFE}
+.snum{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
+.snum.ok{background:var(--ok)}.snum.act{background:var(--accent)}.snum.w{background:#D1D5DB;color:var(--text2)}.snum.e{background:var(--err)}
+.step-info{flex:1}
+.step-info b{font-size:13px;font-weight:600}
+.step-info span{font-size:12px;color:var(--text2);display:block}
 
+/* ALERTS */
+.alert{padding:12px 14px;border-radius:var(--r);font-size:13px;display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.alert-err{background:var(--errl);border:1px solid #FECACA;color:#991B1B}
+.alert-warn{background:var(--warnl);border:1px solid #FDE68A;color:#92400E}
+.alert-ok{background:var(--okl);border:1px solid #BBF7D0;color:#166534}
+.alert-info{background:var(--alt);border:1px solid #BFDBFE;color:#1E40AF}
 
-/* ─── Login ─────────────────────────────────────────── */
-.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:20px}
-.login-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 4px 24px rgba(0,0,0,.08)}
-.login-logo{text-align:center;margin-bottom:28px}
-.login-logo-icon{width:60px;height:60px;background:var(--accent);color:#fff;border-radius:14px;font-size:22px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;margin-bottom:10px}
-.login-logo-text{font-size:22px;font-weight:800;color:var(--text);letter-spacing:.5px}
-.login-logo-sub{font-size:13px;color:var(--text2);margin-top:4px}
-.login-role-tabs{display:flex;gap:6px;margin-bottom:20px;background:var(--bg);border-radius:8px;padding:4px}
-.role-tab{flex:1;padding:7px;border:none;background:transparent;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text2);transition:all .2s}
-.role-tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.1)}
-.login-form .form-group{margin-bottom:14px}
-.login-opts{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.login-footer{margin-top:20px;text-align:center}
+/* CHAT */
+.chat-layout{display:flex;gap:16px;height:calc(100vh - 120px)}
+.chat-history{width:220px;flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow-y:auto;padding:8px}
+.chat-hist-item{padding:9px 10px;border-radius:6px;cursor:pointer;font-size:13px;color:var(--text2);transition:.12s}
+.chat-hist-item:hover{background:var(--bg)}
+.chat-hist-item.active{background:var(--alt);color:var(--accent)}
+.chat-hist-date{font-size:10px;color:var(--text3);padding:8px 10px 4px;text-transform:uppercase;letter-spacing:.4px}
+.chat-main{flex:1;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.chat-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+.chat-msg{display:flex;gap:10px;align-items:flex-start}
+.chat-msg.user{flex-direction:row-reverse}
+.chat-bubble{padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.5;max-width:75%}
+.chat-msg.ai .chat-bubble{background:var(--bg);border:1px solid var(--border);border-radius:4px 12px 12px 12px}
+.chat-msg.user .chat-bubble{background:var(--accent);color:#fff;border-radius:12px 4px 12px 12px}
+.ai-av{width:30px;height:30px;background:var(--accent);border-radius:50%;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chat-bar{display:flex;gap:8px;padding:12px;border-top:1px solid var(--border)}
+.chat-inp{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:20px;font-size:13px;outline:none;background:var(--bg)}
+.chat-inp:focus{border-color:var(--accent);background:var(--surface)}
+.chat-shortcuts{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;border-top:1px solid var(--border)}
+.chat-sc{padding:5px 10px;border:1px solid var(--border);border-radius:14px;font-size:12px;cursor:pointer;background:var(--surface);white-space:nowrap;transition:.12s}
+.chat-sc:hover{background:var(--alt);border-color:var(--accent);color:var(--accent)}
+@media(max-width:700px){.chat-history{display:none}.chat-layout{height:calc(100vh - 110px)}}
 
-/* ─── App Layout ─────────────────────────────────────── */
-.sidebar{position:fixed;top:0;left:0;bottom:0;width:260px;background:var(--nav);color:var(--nav-txt);display:flex;flex-direction:column;z-index:200;transform:translateX(-260px);transition:transform .25s ease}
-.sidebar.open{transform:translateX(0)}
-.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:199}
-.sidebar-overlay.visible{display:block}
-.sidebar-header{display:flex;align-items:center;justify-content:space-between;padding:18px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
-.sidebar-logo{display:flex;align-items:center;gap:10px}
-.sidebar-logo-icon{width:32px;height:32px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff}
-.sidebar-logo-text{font-size:16px;font-weight:700;color:#fff}
-.sidebar-close{background:none;border:none;color:var(--nav-txt);font-size:18px;cursor:pointer;padding:4px}
-.sidebar-role{padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
-.role-switcher{display:flex;align-items:center;gap:10px}
-.role-avatar{width:36px;height:36px;background:var(--accent);border-radius:50%;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.role-info{flex:1;min-width:0}
-.role-name{font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.role-title{font-size:11px;color:var(--nav-txt)}
-.role-switch-btn{background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:14px}
-.sidebar-nav{flex:1;overflow-y:auto;padding:8px 0}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;color:var(--nav-txt);font-size:14px;border-radius:6px;margin:1px 8px;transition:all .15s}
-.nav-item:hover{background:rgba(255,255,255,.08);color:#fff}
-.nav-item.active{background:var(--accent);color:#fff}
-.nav-icon{width:20px;text-align:center;flex-shrink:0}
-.sidebar-footer{padding:8px;border-top:1px solid rgba(255,255,255,.08)}
-.topbar{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100}
-.topbar-menu{background:none;border:none;font-size:20px;cursor:pointer;padding:4px;color:var(--text2)}
-.topbar-title{font-size:17px;font-weight:600;color:var(--text);flex:1}
-.topbar-actions{display:flex;gap:8px;align-items:center}
-.page-content{padding:16px;max-width:1200px}
-
-/* ─── Notifications ──────────────────────────────────── */
+/* NOTIFICATIONS */
 .notif-list{display:flex;flex-direction:column;gap:8px}
-.notif-item{display:flex;gap:12px;align-items:flex-start;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);position:relative;transition:opacity .2s}
+.notif-item{display:flex;gap:12px;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);position:relative}
 .notif-item.unread{border-left:3px solid var(--accent)}
-.notif-item.notif-error.unread{border-left-color:var(--err)}
-.notif-item.notif-warn.unread{border-left-color:var(--warn)}
-.notif-item.notif-info.unread{border-left-color:var(--ok)}
-.notif-icon{font-size:20px;flex-shrink:0;width:28px;text-align:center}
+.notif-item.n-err.unread{border-left-color:var(--err)}
+.notif-item.n-warn.unread{border-left-color:var(--warn)}
+.notif-item.n-ok.unread{border-left-color:var(--ok)}
+.notif-icon{font-size:22px;width:30px;text-align:center;flex-shrink:0}
 .notif-body{flex:1;min-width:0}
-.notif-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px}
+.notif-title{font-size:14px;font-weight:600;margin-bottom:3px}
 .notif-text{font-size:13px;color:var(--text2);line-height:1.4;margin-bottom:6px}
 .notif-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.notif-time{font-size:12px;color:var(--text2)}
-.notif-close{background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:0 4px;flex-shrink:0;align-self:flex-start}
+.notif-time{font-size:12px;color:var(--text3)}
+.notif-close{position:absolute;top:10px;right:10px;background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;line-height:1;padding:2px}
 
-/* ─── Settings ───────────────────────────────────────── */
-.settings-layout{display:flex;gap:20px;align-items:flex-start}
-.settings-sidebar{width:200px;flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
-.settings-nav-item{padding:11px 16px;font-size:14px;cursor:pointer;color:var(--text2);transition:all .15s;border-left:3px solid transparent}
-.settings-nav-item:hover{background:var(--bg);color:var(--text)}
-.settings-nav-item.active{background:var(--accent-lt);color:var(--accent);border-left-color:var(--accent);font-weight:500}
-.settings-content{flex:1;min-width:0}
-.settings-tab{display:none}
-.settings-tab.active{display:block}
-.settings-section-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-.settings-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);gap:16px}
-.settings-row:last-of-type{border-bottom:none}
-.settings-row-label{font-size:14px;color:var(--text);flex-shrink:0}
-.settings-row-value{flex:1;text-align:right;display:flex;justify-content:flex-end}
-.settings-input{border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:14px;color:var(--text);background:var(--bg);width:100%;max-width:280px;outline:none}
-.settings-input:focus{border-color:var(--accent);background:var(--surface)}
-.settings-select{border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:14px;color:var(--text);background:var(--bg);outline:none;cursor:pointer}
-.settings-avatar-row{display:flex;align-items:center;gap:16px;padding:16px;background:var(--bg);border-radius:var(--r);margin-bottom:16px}
-.settings-avatar{width:56px;height:56px;background:var(--accent);color:#fff;border-radius:50%;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.toggle-switch{position:relative;display:inline-block;width:44px;height:24px}
-.toggle-switch input{opacity:0;width:0;height:0}
-.toggle-slider{position:absolute;cursor:pointer;inset:0;background:#CBD5E1;border-radius:24px;transition:.2s}
-.toggle-slider:before{position:absolute;content:'';height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
-.toggle-switch input:checked + .toggle-slider{background:var(--accent)}
-.toggle-switch input:checked + .toggle-slider:before{transform:translateX(20px)}
+/* SETTINGS */
+.settings-wrap{display:flex;gap:16px;align-items:flex-start}
+.settings-tabs{width:200px;flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.st-item{padding:11px 14px;font-size:13px;cursor:pointer;color:var(--text2);transition:.12s;border-left:3px solid transparent}
+.st-item:hover{background:var(--bg);color:var(--text)}
+.st-item.active{background:var(--alt);color:var(--accent);border-left-color:var(--accent);font-weight:600}
+.settings-body{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.stab{display:none}
+.stab.active{display:block}
+.s-title{font-size:15px;font-weight:700;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.s-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);gap:16px}
+.s-row:last-child{border-bottom:none}
+.s-lbl{font-size:13px;color:var(--text);flex-shrink:0}
+.s-val{display:flex;justify-content:flex-end;flex:1}
+.s-inp{border:1.5px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;color:var(--text);background:var(--bg);width:100%;max-width:260px;outline:none}
+.s-inp:focus{border-color:var(--accent);background:var(--surface)}
+.s-sel{border:1.5px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;color:var(--text);background:var(--bg);outline:none;cursor:pointer}
+.toggle{position:relative;display:inline-block;width:42px;height:22px}
+.toggle input{opacity:0;width:0;height:0}
+.tslide{position:absolute;cursor:pointer;inset:0;background:#CBD5E1;border-radius:22px;transition:.2s}
+.tslide:before{position:absolute;content:'';height:16px;width:16px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+.toggle input:checked + .tslide{background:var(--accent)}
+.toggle input:checked + .tslide:before{transform:translateX(20px)}
+.s-av{width:54px;height:54px;background:var(--accent);color:#fff;border-radius:50%;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.s-av-row{display:flex;align-items:center;gap:14px;padding:14px;background:var(--bg);border-radius:var(--r);margin-bottom:16px}
+@media(max-width:700px){.settings-wrap{flex-direction:column}.settings-tabs{width:100%;display:flex;overflow-x:auto}.st-item{white-space:nowrap;border-left:none;border-bottom:3px solid transparent}.st-item.active{border-bottom-color:var(--accent);border-left:none}}
 
-/* ─── Status banner ──────────────────────────────────── */
-.status-banner{padding:10px 14px;border-radius:var(--r);font-size:13px;display:flex;align-items:center;gap:8px}
-.status-banner.ok{background:var(--ok-lt);color:var(--ok);border:1px solid #BBF7D0}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:400;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:12px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,.2)}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid var(--border)}
+.modal-hdr h3{font-size:15px;font-weight:700}
+.modal-x{background:none;border:none;font-size:20px;cursor:pointer;color:var(--text2);line-height:1;padding:2px}
+.modal-body{padding:20px}
+.modal-footer{padding:16px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
 
-/* ─── Misc ───────────────────────────────────────────── */
-.btn-err{background:var(--err);color:#fff;border:none}
-.btn-err:hover{background:#B91C1C}
-.btn-sm{padding:5px 10px;font-size:13px}
-@media(max-width:700px){
-  .settings-layout{flex-direction:column}
-  .settings-sidebar{width:100%}
-  .settings-sidebar{display:flex;overflow-x:auto}
-  .settings-nav-item{white-space:nowrap;border-left:none;border-bottom:3px solid transparent}
-  .settings-nav-item.active{border-bottom-color:var(--accent);border-left:none}
-}
+/* DOC PREVIEW */
+.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.doc-field{padding:8px 10px;background:var(--bg);border-radius:6px}
+.doc-field-lbl{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;font-weight:600}
+.doc-field-val{font-size:13px;font-weight:500}
+.ocr-box{background:#F8FAFF;border:1px dashed var(--accent);border-radius:var(--r);padding:14px;font-size:12px;color:var(--text2);font-family:monospace;margin-bottom:12px;line-height:1.6}
+.check-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px}
+.check-row:last-child{border-bottom:none}
+.check-icon{width:18px;text-align:center}
 
+/* MISC */
+.divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text2)}
+.empty-state .es-icon{font-size:40px;margin-bottom:10px}
+.empty-state p{font-size:14px}
+.ai-banner{background:linear-gradient(135deg,#1E40AF,#2563EB);color:#fff;border-radius:var(--r);padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
+.ai-banner-icon{font-size:28px}
+.ai-banner-text h4{font-size:14px;font-weight:700;margin-bottom:3px}
+.ai-banner-text p{font-size:12px;opacity:.85}
+.drag-zone{border:2px dashed var(--border);border-radius:var(--r);padding:32px;text-align:center;color:var(--text2);transition:.2s;cursor:pointer;margin-bottom:16px}
+.drag-zone:hover{border-color:var(--accent);background:var(--alt);color:var(--accent)}
+.drag-zone .dz-icon{font-size:36px;margin-bottom:8px}
+.drag-zone p{font-size:14px}
+.drag-zone small{font-size:12px;color:var(--text3)}
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
+<!-- ═══ LOGIN ═══ -->
 <div class="screen active" id="screen-login">
-  <div class="login-page">
-    <div class="login-card">
-      <div class="login-logo">
-        <div class="login-logo-icon">ГБ</div>
-        <div class="login-logo-text">GLAVBUH<span style="color:var(--accent)">.AI</span></div>
-        <div class="login-logo-sub">Умная бухгалтерия для бизнеса</div>
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="login-logo">ГБ</div>
+      <div class="login-name">GLAVBUH<span style="color:var(--accent)">.AI</span></div>
+      <div class="login-sub">Умная бухгалтерия для вашего бизнеса</div>
+    </div>
+    <div class="role-tabs">
+      <button class="role-tab active" onclick="pickRole(this,'director')">Директор</button>
+      <button class="role-tab" onclick="pickRole(this,'accountant')">Бухгалтер</button>
+      <button class="role-tab" onclick="pickRole(this,'operator')">Оператор</button>
+    </div>
+    <div class="fg"><label class="lbl">Email</label><input class="inp" id="le" value="d.sokolov@techprom.ru"></div>
+    <div class="fg"><label class="lbl">Пароль</label><input class="inp" type="password" value="••••••••"></div>
+    <div class="login-opts">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer"><input type="checkbox" checked> Запомнить</label>
+      <a href="#">Забыли пароль?</a>
+    </div>
+    <button class="btn btn-p btn-full" onclick="doLogin()">Войти в систему</button>
+    <div style="margin-top:16px;text-align:center;font-size:12px;color:var(--text3)">Демо: выберите роль → Войти</div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 0: DIRECTOR DASHBOARD ═══ -->
+<div class="screen" id="screen-0">
+  <div class="topbar">
+    <button class="tb-menu" onclick="sbToggle()">☰</button>
+    <span class="tb-title">Дашборд директора</span>
+    <span class="tb-badge">ООО «ТехПром»</span>
+  </div>
+  <div class="pc">
+    <div class="ai-banner">
+      <div class="ai-banner-icon">🤖</div>
+      <div class="ai-banner-text">
+        <h4>ИИ-анализ за сегодня</h4>
+        <p>Выручка на 12% выше прогноза · 3 риска контрагентов · НДС к уплате 25 июля</p>
       </div>
-      <div class="login-role-tabs">
-        <button class="role-tab active" onclick="selectRole(this,'director')">Директор</button>
-        <button class="role-tab" onclick="selectRole(this,'accountant')">Бухгалтер</button>
-        <button class="role-tab" onclick="selectRole(this,'operator')">Оператор</button>
+      <button class="btn btn-s btn-sm" style="margin-left:auto;flex-shrink:0" onclick="nav('screen-2')">Спросить ИИ</button>
+    </div>
+    <div class="g4">
+      <div class="sc"><div class="sc-lbl">Выручка (июль)</div><div class="sc-val">8 240 000 ₽</div><div class="sc-sub sc-up">↑ 12% к прошлому месяцу</div></div>
+      <div class="sc"><div class="sc-lbl">Расходы (июль)</div><div class="sc-val">5 180 000 ₽</div><div class="sc-sub sc-dn">↑ 4% к прошлому месяцу</div></div>
+      <div class="sc"><div class="sc-lbl">Прибыль (июль)</div><div class="sc-val">3 060 000 ₽</div><div class="sc-sub sc-up">↑ 18% к прошлому месяцу</div></div>
+      <div class="sc"><div class="sc-lbl">НДС к уплате</div><div class="sc-val" style="color:var(--warn)">1 284 000 ₽</div><div class="sc-sub">Срок: 25 июля</div></div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-hdr"><h3>📈 P&amp;L — июль 2025</h3></div>
+        <div class="prog-wrap"><div class="prog-hdr"><span>Выручка</span><span>8 240 000 ₽</span></div><div class="prog"><div class="prog-bar blue" style="width:100%"></div></div></div>
+        <div class="prog-wrap"><div class="prog-hdr"><span>Себестоимость</span><span>3 840 000 ₽</span></div><div class="prog"><div class="prog-bar warn" style="width:47%"></div></div></div>
+        <div class="prog-wrap"><div class="prog-hdr"><span>Валовая прибыль</span><span>4 400 000 ₽</span></div><div class="prog"><div class="prog-bar ok" style="width:53%"></div></div></div>
+        <div class="prog-wrap"><div class="prog-hdr"><span>Операц. расходы</span><span>1 340 000 ₽</span></div><div class="prog"><div class="prog-bar err" style="width:16%"></div></div></div>
+        <div class="prog-wrap"><div class="prog-hdr"><span><b>Чистая прибыль</b></span><span><b>3 060 000 ₽</b></span></div><div class="prog"><div class="prog-bar ok" style="width:37%"></div></div></div>
       </div>
-      <div class="login-form">
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input class="form-control" type="email" id="login-email" placeholder="user@company.ru" value="d.sokolov@techprom.ru">
+      <div class="card">
+        <div class="card-hdr"><h3>📅 Налоговый календарь</h3></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--errl);border-radius:var(--r)"><span>🔴</span><div><div style="font-size:13px;font-weight:600">НДС за 2 квартал</div><div style="font-size:12px;color:var(--text2)">25 июля · 1 284 000 ₽</div></div><span class="badge b-err" style="margin-left:auto">3 дня</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--warnl);border-radius:var(--r)"><span>🟡</span><div><div style="font-size:13px;font-weight:600">Страховые взносы</div><div style="font-size:12px;color:var(--text2)">25 июля · 284 000 ₽</div></div><span class="badge b-warn" style="margin-left:auto">3 дня</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--bg);border-radius:var(--r)"><span>🟢</span><div><div style="font-size:13px;font-weight:600">Декларация НДС</div><div style="font-size:12px;color:var(--text2)">25 июля</div></div><span class="badge b-ok" style="margin-left:auto">3 дня</span></div>
+          <div style="display:flex;align-items:center;gap:10px;padding:9px;background:var(--bg);border-radius:var(--r)"><span>🟢</span><div><div style="font-size:13px;font-weight:600">6-НДФЛ полугодие</div><div style="font-size:12px;color:var(--text2)">28 июля</div></div><span class="badge b-gray" style="margin-left:auto">6 дней</span></div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Пароль</label>
-          <input class="form-control" type="password" id="login-pass" placeholder="Пароль" value="••••••••">
-        </div>
-        <div class="login-opts">
-          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
-            <input type="checkbox" checked> Запомнить меня
-          </label>
-          <a href="#" style="font-size:13px;color:var(--accent)">Забыли пароль?</a>
-        </div>
-        <button class="btn btn-primary" style="width:100%;padding:12px;font-size:15px" onclick="doLogin()">Войти в систему</button>
       </div>
-      <div class="login-footer">
-        <div class="login-demo-info">
-          <span style="color:var(--text2);font-size:12px">Демо-доступ: выберите роль выше и нажмите «Войти»</span>
+    </div>
+    <div class="g2">
+      <div>
+        <div class="card-hdr" style="margin-bottom:10px"><h3>💰 Дебиторская задолженность</h3><span style="font-size:13px;font-weight:700">3 240 000 ₽</span></div>
+        <div class="tw"><table><thead><tr><th>Контрагент</th><th>Сумма</th><th>Дней</th><th>Риск</th></tr></thead><tbody>
+          <tr><td class="tdl">ООО «Техника+»</td><td>890 000 ₽</td><td style="color:var(--err);font-weight:700">45</td><td><span class="badge b-err">Высокий</span></td></tr>
+          <tr><td class="tdl">ИП Смирнов</td><td>340 000 ₽</td><td style="color:var(--warn);font-weight:600">28</td><td><span class="badge b-warn">Средний</span></td></tr>
+          <tr><td class="tdl">ООО «Альфа»</td><td>2 010 000 ₽</td><td>12</td><td><span class="badge b-ok">Низкий</span></td></tr>
+        </tbody></table></div>
+      </div>
+      <div>
+        <div class="card-hdr" style="margin-bottom:10px"><h3>📤 Кредиторская задолженность</h3><span style="font-size:13px;font-weight:700">1 890 000 ₽</span></div>
+        <div class="tw"><table><thead><tr><th>Контрагент</th><th>Сумма</th><th>Срок</th><th>Статус</th></tr></thead><tbody>
+          <tr><td class="tdl">ООО «Стройматериалы»</td><td>540 000 ₽</td><td>20 июля</td><td><span class="badge b-err">Просрочено</span></td></tr>
+          <tr><td class="tdl">ООО «Логистик»</td><td>1 350 000 ₽</td><td>28 июля</td><td><span class="badge b-ok">В срок</span></td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 1: ACCOUNTANT DASHBOARD ═══ -->
+<div class="screen" id="screen-1">
+  <div class="topbar">
+    <button class="tb-menu" onclick="sbToggle()">☰</button>
+    <span class="tb-title">Рабочий стол</span>
+  </div>
+  <div class="pc">
+    <div class="g4">
+      <div class="sc"><div class="sc-lbl">Входящих сегодня</div><div class="sc-val">14</div><div class="sc-sub">3 требуют обработки</div></div>
+      <div class="sc"><div class="sc-lbl">Ошибки НДС</div><div class="sc-val" style="color:var(--err)">3</div><div class="sc-sub sc-dn">Требуется исправление</div></div>
+      <div class="sc"><div class="sc-lbl">Платежей сегодня</div><div class="sc-val">7</div><div class="sc-sub sc-up">На сумму 1 284 000 ₽</div></div>
+      <div class="sc"><div class="sc-lbl">До закрытия месяца</div><div class="sc-val" style="color:var(--warn)">18 дней</div><div class="sc-sub">Шаг 3 из 8</div></div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-hdr"><h3>⚡ Срочные задачи</h3><span class="badge b-err">5 задач</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="alert alert-err">🚨 Исправить счёт-фактуру №СФ-2025-0891 — ошибка ИНН</div>
+          <div class="alert alert-err">🚨 Ответить на требование ФНС №ТР-4821 (до 22 июля)</div>
+          <div class="alert alert-warn">⚠️ Дубль платежа — проверить ООО «Стройматериалы»</div>
+          <div class="alert alert-warn">⚠️ 12 документов без проводок за июль</div>
+          <div class="alert alert-info">ℹ️ Формирование декларации НДС — срок 25 июля</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><h3>🔄 Закрытие месяца</h3><button class="btn btn-s btn-sm" onclick="nav('screen-10')">Открыть</button></div>
+        <div class="step-list">
+          <div class="step done"><div class="snum ok">✓</div><div class="step-info"><b>Входящие документы</b><span>Завершено · 247 документов</span></div></div>
+          <div class="step done"><div class="snum ok">✓</div><div class="step-info"><b>Банковские выписки</b><span>Завершено · синхронизовано</span></div></div>
+          <div class="step active-step"><div class="snum act">3</div><div class="step-info"><b>Проверка НДС</b><span>В процессе · 3 ошибки</span></div></div>
+          <div class="step"><div class="snum w">4</div><div class="step-info"><b>Начисление зарплаты</b><span>Ожидание</span></div></div>
+          <div class="step"><div class="snum w">5</div><div class="step-info"><b>Формирование отчётов</b><span>Ожидание</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><h3>📥 Последние входящие документы</h3><button class="btn btn-s btn-sm" onclick="nav('screen-5')">Все документы</button></div>
+      <div class="tw"><table><thead><tr><th>Документ</th><th>Контрагент</th><th>Сумма</th><th>Статус</th><th></th></tr></thead><tbody>
+        <tr><td class="tdl" onclick="nav('screen-4')">Счёт-фактура №СФ-891</td><td>ООО «Альфа»</td><td>284 000 ₽</td><td><span class="badge b-err">Ошибка ИНН</span></td><td><button class="btn btn-s btn-sm">Исправить</button></td></tr>
+        <tr><td class="tdl" onclick="nav('screen-4')">УПД №УПД-0234</td><td>ООО «Стройматериалы»</td><td>540 000 ₽</td><td><span class="badge b-warn">Проверка</span></td><td><button class="btn btn-s btn-sm">Открыть</button></td></tr>
+        <tr><td class="tdl" onclick="nav('screen-4')">Акт №А-1456</td><td>ООО «Логистик»</td><td>125 000 ₽</td><td><span class="badge b-ok">Принят</span></td><td><button class="btn btn-s btn-sm">Просмотр</button></td></tr>
+      </tbody></table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 2: AI CHAT ═══ -->
+<div class="screen" id="screen-2">
+  <div class="topbar">
+    <button class="tb-menu" onclick="sbToggle()">☰</button>
+    <span class="tb-title">ИИ-ассистент</span>
+  </div>
+  <div class="pc" style="display:flex;flex-direction:column;height:calc(100vh - 50px);padding:0">
+    <div class="chat-shortcuts">
+      <span class="chat-sc" onclick="qs('Проверь декларацию НДС за 2 кв 2025')">🔍 Проверить НДС</span>
+      <span class="chat-sc" onclick="qs('Анализ дебиторской задолженности')">📊 Дебиторка</span>
+      <span class="chat-sc" onclick="qs('Статус закрытия месяца')">🔄 Закрытие месяца</span>
+      <span class="chat-sc" onclick="qs('Проверь контрагента ООО Альфа')">🏢 Проверка контрагента</span>
+      <span class="chat-sc" onclick="qs('Какие риски есть по НДС?')">⚠️ Риски НДС</span>
+    </div>
+    <div class="chat-layout" style="flex:1;padding:16px;gap:12px">
+      <div class="chat-history">
+        <div class="chat-hist-date">Сегодня</div>
+        <div class="chat-hist-item active">Проверка декларации НДС</div>
+        <div class="chat-hist-item">Анализ контрагента ООО Альфа</div>
+        <div class="chat-hist-date">Вчера</div>
+        <div class="chat-hist-item">Закрытие июня 2025</div>
+        <div class="chat-hist-item">Требование ФНС №4821</div>
+        <div class="chat-hist-item">Подготовка 6-НДФЛ</div>
+      </div>
+      <div class="chat-main">
+        <div class="chat-msgs" id="chat-msgs">
+          <div class="chat-msg ai">
+            <div class="ai-av">ИИ</div>
+            <div class="chat-bubble">Добрый день! Я GLAVBUH.AI — ваш бухгалтерский ассистент. Могу проверить документы, рассчитать налоги, подготовить ответ на требование ФНС или проверить контрагента. Чем могу помочь?</div>
+          </div>
+          <div class="chat-msg user">
+            <div class="chat-bubble">Проверь декларацию НДС за 2 квартал</div>
+          </div>
+          <div class="chat-msg ai">
+            <div class="ai-av">ИИ</div>
+            <div class="chat-bubble">
+              <b>Анализ декларации НДС — 2 квартал 2025</b><br><br>
+              ✅ Книга покупок: 847 записей, итог 7 430 000 ₽ — OK<br>
+              ✅ Книга продаж: 234 записи, итог 8 714 000 ₽ — OK<br>
+              🚨 <b>Ошибка:</b> Счёт-фактура №СФ-2025-0891 — ИНН контрагента не найден в ЕГРЮЛ<br>
+              ⚠️ Счёт-фактура №СФ-2025-0756 — несоответствие суммы НДС на 1 200 ₽<br><br>
+              <b>НДС к уплате: 1 284 000 ₽</b> · Срок: 25.07.2025<br><br>
+              Рекомендую исправить ошибки до подачи декларации.
+            </div>
+          </div>
+        </div>
+        <div class="chat-bar">
+          <input class="chat-inp" id="chat-inp" placeholder="Задайте вопрос...">
+          <button class="btn btn-p" onclick="sendMsg()">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 3: DOCUMENTS LIST ═══ -->
+<div class="screen" id="screen-3">
+  <div class="topbar">
+    <button class="tb-menu" onclick="sbToggle()">☰</button>
+    <span class="tb-title">Документы</span>
+    <button class="btn btn-p btn-sm" onclick="nav('screen-6')">+ Создать</button>
+  </div>
+  <div class="pc">
+    <div class="fbar">
+      <button class="ftab active" onclick="ft(this)">Все <span class="badge b-gray" style="margin-left:4px">247</span></button>
+      <button class="ftab" onclick="ft(this)">Входящие</button>
+      <button class="ftab" onclick="ft(this)">Исходящие</button>
+      <button class="ftab" onclick="ft(this)">Счета</button>
+      <button class="ftab" onclick="ft(this)">Акты</button>
+      <input class="sinp" style="margin-left:auto" placeholder="🔍 Поиск...">
+    </div>
+    <div class="tw"><table><thead><tr><th>Документ</th><th>Тип</th><th>Контрагент</th><th>Сумма</th><th>Дата</th><th>Статус</th><th></th></tr></thead><tbody>
+      <tr><td class="tdl" onclick="nav('screen-4')">СФ-2025-0891</td><td>Счёт-фактура</td><td>ООО «Альфа»</td><td>284 000 ₽</td><td>12.07.2025</td><td><span class="badge b-err">Ошибка</span></td><td><button class="btn btn-s btn-sm">Открыть</button></td></tr>
+      <tr><td class="tdl" onclick="nav('screen-4')">УПД-0234</td><td>УПД</td><td>ООО «Стройматериалы»</td><td>540 000 ₽</td><td>11.07.2025</td><td><span class="badge b-warn">Проверка</span></td><td><button class="btn btn-s btn-sm">Открыть</button></td></tr>
+      <tr><td class="tdl" onclick="nav('screen-4')">А-1456</td><td>Акт</td><td>ООО «Логистик»</td><td>125 000 ₽</td><td>10.07.2025</td><td><span class="badge b-ok">Принят</span></td><td><button class="btn btn-s btn-sm">Открыть</button></td></tr>
+      <tr><td class="tdl" onclick="nav('screen-4')">СЧ-2025-0445</td><td>Счёт</td><td>ИП Смирнов</td><td>86 000 ₽</td><td>09.07.2025</td><td><span class="badge b-ok">Оплачен</span></td><td><button class="btn btn-s btn-sm">Открыть</button></td></tr>
+      <tr><td class="tdl" onclick="nav('screen-4')">АКТ-2025-0231</td><td>Акт</td><td>ООО «ТехСервис»</td><td>220 000 ₽</td><td>08.07.2025</td><td><span class="badge b-info">На подписи</span></td><td><button class="btn btn-s btn-sm">Открыть</button></td></tr>
+      <tr><td class="tdl" onclick="nav('screen-4')">СФ-2025-0756</td><td>Счёт-фактура</td><td>ООО «Бета Трейд»</td><td>340 000 ₽</td><td>07.07.2025</td><td><span class="badge b-warn">Расхождение</span></td><td><button class="btn btn-s btn-sm">Открыть</button></td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 4: DOCUMENT CARD ═══ -->
+<div class="screen" id="screen-4">
+  <div class="topbar">
+    <button class="tb-menu" onclick="sbToggle()">☰</button>
+    <button class="btn btn-g btn-sm" onclick="nav('screen-3')">← Назад</button>
+    <span class="tb-title" style="margin-left:8px">Счёт-фактура №СФ-2025-0891</span>
+  </div>
+  <div class="pc">
+    <div class="g2">
+      <div>
+        <div class="card">
+          <div class="card-hdr"><h3>Реквизиты документа</h3><span class="badge b-err">Ошибка ИНН</span></div>
+          <div class="doc-grid">
+            <div class="doc-field"><div class="doc-field-lbl">Номер</div><div class="doc-field-val">СФ-2025-0891</div></div>
+            <div class="doc-field"><div class="doc-field-lbl">Дата</div><div class="doc-field-val">12.07.2025</div></div>
+            <div class="doc-field"><div class="doc-field-lbl">Сумма без НДС</div><div class="doc-field-val">236 667 ₽</div></div>
+            <div class="doc-field"><div class="doc-field-lbl">НДС 20%</div><div class="doc-field-val">47 333 ₽</div></div>
+            <div class="doc-field"><div class="doc-field-lbl">Итого</div><div class="doc-field-val" style="font-weight:700">284 000 ₽</div></div>
+            <div class="doc-field"><div class="doc-field-lbl">Валюта</div><div class="doc-field-val">RUB</div></div>
+          </div>
+          <hr class="divider">
+          <div style="font-size:13px;font-weight:600;margin-bottom:8px">Контрагент: ООО «Альфа»</div>
+          <div class="doc-grid">
+            <div class="doc-field"><div class="doc-field-lbl">ИНН</div><div class="doc-field-val" style="color:var(--err)">7701234568 ⚠️</div></div>
+            <div class="doc-field"><div class="doc-field-lbl">КПП</div><div class="doc-field-val">770101001</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hdr"><h3>🤖 ИИ-проверка</h3></div>
+          <div class="check-row"><span class="check-icon">✅</span> Формат документа соответствует требованиям</div>
+          <div class="check-row"><span class="check-icon">✅</span> Подпись продавца присутствует</div>
+          <div class="check-row"><span class="check-icon">❌</span><span style="color:var(--err)">ИНН 7701234568 — не найден в ЕГРЮЛ</span></div>
+          <div class="check-row"><span class="check-icon">⚠️</span><span style="color:var(--warn)">Адрес контрагента не совпадает с базой ФНС</span></div>
+          <div class="check-row"><span class="check-icon">✅</span> Сумма НДС рассчитана корректно</div>
+          <div class="btn-row" style="margin-top:14px">
+            <button class="btn btn-p btn-sm">Исправить ИНН</button>
+            <button class="btn btn-e btn-sm">Отклонить</button>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><h3>OCR — Скан документа</h3></div>
+        <div style="background:#E8EDF5;border-radius:var(--r);height:200px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;color:var(--text2);font-size:13px">📄 Предпросмотр скана</div>
+        <div class="ocr-box">СЧЁТ-ФАКТУРА №СФ-2025-0891 от 12.07.2025
+Продавец: ООО "АЛЬФА"
+ИНН/КПП: 7701234568 / 770101001
+Покупатель: ООО "ТЕХПРОМ"
+ИНН/КПП: 7701234567 / 770101001
+
+Наименование: Услуги по договору №45
+Сумма без НДС: 236 666,67 ₽
+НДС 20%: 47 333,33 ₽
+ИТОГО: 284 000,00 ₽
+</div>
+        <div style="font-size:12px;color:var(--text3)">Распознано OCR · точность 97.3% · 12.07.2025 14:32</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 5: INCOMING DOCUMENTS ═══ -->
+<div class="screen" id="screen-5">
+  <div class="topbar">
+    <button class="tb-menu" onclick="sbToggle()">☰</button>
+    <span class="tb-title">Входящие документы</span>
+  </div>
+  <div class="pc">
+    <div class="drag-zone" onclick="this.style.borderColor='var(--accent)'">
+      <div class="dz-icon">📂</div>
+      <p>Перетащите файлы сюда или нажмите для выбора</p>
+      <small>PDF, JPG, PNG, XLSX — до 50 МБ</small>
+    </div>
+    <div class="g3">
+      <div class="sc"><div class="sc-lbl">Ожидают обработки</div><div class="sc-val" style="color:var(--warn)">14</div><div class="sc-sub">Загружено сегодня</div></div>
+      <div class="sc"><div class="sc-lbl">Обработано (июль)</div><div class="sc-val">233</div><div class="sc-sub sc-up">↑ 15% к июню</div></div>
+      <div class="sc"><div class="sc-lbl">Ошибки OCR</div><div class="sc-val" style="color:var(--err)">2</div><div class="sc-sub">Требуют ручной правки</div></div>
+    </div>
+    <div class="tw"><table><thead><tr><th>Файл</th><th>Загружен</th><th>Тип</th><th>Контрагент</th><th>Сумма</th><th>Статус</th></tr></thead><tbody>
+      <tr><td class="tdl" onclick="nav('screen-4')">скан_001.pdf</td><td>Иванова М.</td><td>Счёт-фактура</td><td>ООО «Альфа»</td><td>284 000 ₽</td><td><span class="badge b-err">Ошибка ИНН</span></td></tr>
+      <tr><td class="tdl" onclick="nav('screen-4')">упд_стройм.pdf</td><td>Кузнецов П.</td><td>УПД</td><td>ООО «Стройматериалы»</td><td>540 000 ₽</td><td><span class="badge b-warn">На проверке</span></td></tr>
+      <tr><td class="tdl" onclick="nav('screen-4')">акт_логистик.jpg</td><td>Иванова М.</td><td>Акт</td><td>ООО «Логистик»</td><td>125 000 ₽</td><td><span class="badge b-ok">Принят</span></td></tr>
+      <tr><td class="tdl" onclick="nav('screen-4')">счёт_456.pdf</td><td>Кузнецов П.</td><td>Счёт</td><td>ИП Смирнов</td><td>86 000 ₽</td><td><span class="badge b-info">OCR обработка</span></td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 6: CREATE DOCUMENT ═══ -->
+<div class="screen" id="screen-6">
+  <div class="topbar">
+    <button class="tb-menu" onclick="sbToggle()">☰</button>
+    <button class="btn btn-g btn-sm" onclick="nav('screen-3')">← Назад</button>
+    <span class="tb-title" style="margin-left:8px">Создать документ</span>
+  </div>
+  <div class="pc">
+    <div class="card" style="max-width:640px">
+      <div class="card-hdr"><h3>Новый документ</h3></div>
+      <div class="fg"><label class="lbl">Тип документа</label><select class="inp"><option>Счёт-фактура</option><option>УПД</option><option>Акт</option><option>Счёт на оплату</option><option>Накладная ТОРГ-12</option></select></div>
+      <div class="g2">
+        <div class="fg"><label class="lbl">Номер</label><input class="inp" value="СФ-2025-0892"></div>
+        <div class="fg"><label class="lbl">Дата</label><input class="inp" type="date" value="2025-07-15"></div>
+      </div>
+      <div class="fg"><label class="lbl">Контрагент</label><input class="inp" placeholder="Наименование или ИНН"></div>
+      <div class="g2">
+        <div class="fg"><label class="lbl">Сумма без НДС</label><input class="inp" placeholder="0.00"></div>
+        <div class="fg"><label class="lbl">Ставка НДС</label><select class="inp"><option>20%</option><option>10%</option><option>0%</option><option>Без НДС</option></select></div>
+      </div>
+      <div class="fg"><label class="lbl">Назначение / Описание</label><textarea class="inp" rows="3" placeholder="Описание товаров/услуг"></textarea></div>
+      <div class="fg"><label class="lbl">Прикрепить файл</label><div class="drag-zone" style="padding:20px"><div class="dz-icon" style="font-size:24px">📎</div><p style="font-size:13px">Скан или PDF документа</p></div></div>
+      <div class="btn-row">
+        <button class="btn btn-p">💾 Сохранить</button>
+        <button class="btn btn-s">Предпросмотр</button>
+        <button class="btn btn-g" onclick="nav('screen-3')">Отмена</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 7: PAYMENTS ═══ -->
+<div class="screen" id="screen-7">
+  <div class="topbar">
+    <button class="tb-menu" onclick="sbToggle()">☰</button>
+    <span class="tb-title">Платежи</span>
+    <button class="btn btn-p btn-sm" onclick="showModal('m-pay')">+ Новый платёж</button>
+  </div>
+  <div class="pc">
+    <div class="alert alert-warn">⚠️ Обнаружен возможный дубль: платёж ООО «Стройматериалы» 245 000 ₽ — похожий проведён 3 дня назад. <button class="btn btn-s btn-sm" style="margin-left:8px" onclick="showModal('m-dup')">Проверить</button></div>
+    <div class="g3">
+      <div class="sc"><div class="sc-lbl">Исходящих (июль)</div><div class="sc-val">12</div><div class="sc-sub">На 2 840 000 ₽</div></div>
+      <div class="sc"><div class="sc-lbl">Входящих (июль)</div><div class="sc-val">8</div><div class="sc-sub sc-up">На 4 120 000 ₽</div></div>
+      <div class="sc"><div class="sc-lbl">На согласовании</div><div class="sc-val" style="color:var(--warn)">3</div><div class="sc-sub">Ожидают подписи</div></div>
+    </div>
+    <div class="fbar">
+      <button class="ftab active" onclick="ft(this)">Все</button>
+      <button class="ftab" onclick="ft(this)">Исходящие</button>
+      <button class="ftab" onclick="ft(this)">Входящие</button>
+      <button class="ftab" onclick="ft(this)">На согласовании</button>
+    </div>
+    <div class="tw"><table><thead><tr><th>№ П/П</th><th>Контрагент</th><th>Назначение</th><th>Сумма</th><th>Дата</th><th>Статус</th></tr></thead><tbody>
+      <tr><td>1847</td><td>ООО «Стройматериалы»</td><td>Оплата по договору №123</td><td style="color:var(--err)">245 000 ₽</td><td>15.07.2025</td><td><span class="badge b-warn">Дубль?</span></td></tr>
+      <tr><td>1846</td><td>ООО «Логистик»</td><td>Услуги логистики июль</td><td style="color:var(--err)">125 000 ₽</td><td>14.07.2025</td><td><span class="badge b-ok">Проведён</span></td></tr>
+      <tr><td>1845</td><td>ФНС России</td><td>Авансовый платёж НДС</td><td style="color:var(--err)">428 000 ₽</td><td>10.07.2025</td><td><span class="badge b-ok">Проведён</span></td></tr>
+      <tr><td>1844</td><td>ООО «ТехСервис»</td><td>Техническое обслуживание</td><td style="color:var(--err)">84 000 ₽</td><td>09.07.2025</td><td><span class="badge b-info">На согласовании</span></td></tr>
+      <tr><td>Вх.</td><td>ООО «Техника+»</td><td>Оплата счёта №445</td><td style="color:var(--ok)">+890 000 ₽</td><td>08.07.2025</td><td><span class="badge b-ok">Получен</span></td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 8: VAT / НДС ═══ -->
+<div class="screen" id="screen-8">
+  <div class="topbar">
+    <button class="tb-menu" onclick="sbToggle()">☰</button>
+    <span class="tb-title">НДС — 2 квартал 2025</span>
+  </div>
+  <div class="pc">
+    <div class="g3">
+      <div class="sc"><div class="sc-lbl">НДС начисленный</div><div class="sc-val">2 440 000 ₽</div><div class="sc-sub">Книга продаж</div></div>
+      <div class="sc"><div class="sc-lbl">НДС к вычету</div><div class="sc-val">1 156 000 ₽</div><div class="sc-sub">Книга покупок</div></div>
+      <div class="sc" style="border-color:var(--warn)"><div class="sc-lbl">К уплате</div><div class="sc-val" style="color:var(--warn)">1 284 000 ₽</div><div class="sc-sub">Срок: 25.07.2025</div></div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="card-hdr"><h3>📗 Книга продаж</h3><span class="badge b-ok">234 записи</span></div>
+        <div class="tw"><table><thead><tr><th>Документ</th><th>Контрагент</th><th>НДС</th><th>Статус</th></tr></thead><tbody>
+          <tr><td>СФ-0891</td><td>ООО «Альфа»</td><td>47 333 ₽</td><td><span class="badge b-err">Ошибка ИНН</span></td></tr>
+          <tr><td>СФ-0756</td><td>ООО «Бета»</td><td>56 667 ₽</td><td><span class="badge b-warn">Расхождение</span></td></tr>
+          <tr><td>СФ-0721</td><td>ООО «Гамма»</td><td>120 000 ₽</td><td><span class="badge b-ok">OK</span></td></tr>
+        </tbody></table></div>
+        <button class="btn btn-s btn-sm">Показать все</button>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><h3>📘 Книга покупок</h3><span class="badge b-ok">847 записей</span></div>
+        <div class="tw"><table><thead><tr><th>Документ</th><th>Контрагент</th><th>НДС</th><th>Статус</th></tr></thead><tbody>
+          <tr><td>УПД-0234</td><td>ООО «Стройматериалы»</td><td>90 000 ₽</td><td><span class="badge b-ok">OK</span></td></tr>
+          <tr><td>А-1456</td><td>ООО «Логистик»</td><td>20 833 ₽</td><td><span class="badge b-ok">OK</span></td></tr>
+        </tbody></table></div>
+        <button class="btn btn-s btn-sm">Показать все</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><h3>📋 Декларация НДС</h3><button class="btn btn-p btn-sm">Сформировать</button></div>
+      <div class="alert alert-err">🚨 2 ошибки в книге продаж — исправьте до подачи декларации</div>
+      <div class="doc-grid">
+        <div class="doc-field"><div class="doc-field-lbl">Раздел 3 — НДС начисленный</div><div class="doc-field-val">2 440 000 ₽</div></div>
+        <div class="doc-field"><div class="doc-field-lbl">Раздел 3 — НДС к вычету</div><div class="doc-field-val">1 156 000 ₽</div></div>
+        <div class="doc-field"><div class="doc-field-lbl">К уплате в бюджет</div><div class="doc-field-val" style="color:var(--warn);font-weight:700">1 284 000 ₽</div></div>
+        <div class="doc-field"><div class="doc-field-lbl">Срок подачи</div><div class="doc-field-val">25.07.2025</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 9: REPORTS ═══ -->
+<div class="screen" id="screen-9">
+  <div class="topbar">
+    <button class="tb-menu" onclick="sbToggle()">☰</button>
+    <span class="tb-title">Отчёты</span>
+  </div>
+  <div class="pc">
+    <div class="g3">
+      <div class="card" style="cursor:pointer" onclick="nav('screen-8')">
+        <div class="sc-icon">📊</div>
+        <div style="font-weight:700;margin-bottom:4px">Декларация НДС</div>
+        <div style="font-size:12px;color:var(--text2)">2 квартал 2025 · Срок 25.07</div>
+        <div style="margin-top:10px"><span class="badge b-err">2 ошибки</span></div>
+      </div>
+      <div class="card" style="cursor:pointer">
+        <div class="sc-icon">👥</div>
+        <div style="font-weight:700;margin-bottom:4px">6-НДФЛ</div>
+        <div style="font-size:12px;color:var(--text2)">Полугодие 2025 · Срок 28.07</div>
+        <div style="margin-top:10px"><span class="badge b-ok">Готов к подаче</span></div>
+      </div>
+      <div class="card" style="cursor:pointer">
+        <div class="sc-icon">🏦</div>
+        <div style="font-weight:700;margin-bottom:4px">РСВ</div>
+        <div style="font-size:12px;color:var(--text2)">Полугодие 2025 · Срок 25.07</div>
+        <div style="margin-top:10px"><span class="badge b-warn">Формируется</span></div>
+      </div>
+      <div class="card" style="cursor:pointer">
+        <div class="sc-icon">📈</div>
+        <div style="font-weight:700;margin-bottom:4px">Бухгалтерский баланс</div>
+        <div style="font-size:12px;color:var(--text2)">Полугодие 2025</div>
+        <div style="margin-top:10px"><span class="badge b-info">В работе</span></div>
+      </div>
+      <div class="card" style="cursor:pointer">
+        <div class="sc-icon">💰</div>
+        <div style="font-weight:700;margin-bottom:4px">ОФР (Прибыли и убытки)</div>
+        <div style="font-size:12px;color:var(--text2)">Полугодие 2025</div>
+        <div style="margin-top:10px"><span class="badge b-info">В работе</span></div>
+      </div>
+      <div class="card" style="cursor:pointer">
+        <div class="sc-icon">📑</div>
+        <div style="font-weight:700;margin-bottom:4px">Прибыль и убытки</div>
+        <div style="font-size:12px;color:var(--text2)">Июль 2025</div>
+        <div style="margin-top:10px"><span class="badge b-ok">Сформирован</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 10: MONTH CLOSE ═══ -->
+<div class="screen" id="screen-10">
+  <div class="topbar">
+    <button class="tb-menu" onclick="sbToggle()">☰</button>
+    <span class="tb-title">Закрытие месяца — Июль 2025</span>
+  </div>
+  <div class="pc">
+    <div class="g3">
+      <div class="sc"><div class="sc-lbl">Прогресс</div><div class="sc-val">37%</div><div class="prog" style="margin-top:8px"><div class="prog-bar blue" style="width:37%"></div></div></div>
+      <div class="sc"><div class="sc-lbl">Выполнено шагов</div><div class="sc-val">3 из 8</div><div class="sc-sub">Текущий: Проверка НДС</div></div>
+      <div class="sc"><div class="sc-lbl">Блокирующих ошибок</div><div class="sc-val" style="color:var(--err)">2</div><div class="sc-sub sc-dn">Требуют устранения</div></div>
+    </div>
+    <div class="alert alert-err">🚨 Закрытие заблокировано: исправьте ошибки НДС и дублирующий платёж</div>
+    <div class="step-list">
+      <div class="step done"><div class="snum ok">✓</div><div class="step-info"><b>Входящие документы</b><span>247 документов обработано</span></div><span class="badge b-ok">Завершено</span></div>
+      <div class="step done"><div class="snum ok">✓</div><div class="step-info"><b>Банковские выписки</b><span>Синхронизировано с банком</span></div><span class="badge b-ok">Завершено</span></div>
+      <div class="step done"><div class="snum ok">✓</div><div class="step-info"><b>Авансы и предоплаты</b><span>14 авансов зачтено</span></div><span class="badge b-ok">Завершено</span></div>
+      <div class="step err"><div class="snum e">!</div><div class="step-info"><b>Проверка НДС</b><span>Ошибка ИНН в СФ-0891 · расхождение в СФ-0756</span></div><span class="badge b-err">Ошибка</span></div>
+      <div class="step active-step"><div class="snum act">5</div><div class="step-info"><b>Начисление зарплаты</b><span>Ожидает завершения проверки НДС</span></div><span class="badge b-warn">Ожидание</span></div>
+      <div class="step"><div class="snum w">6</div><div class="step-info"><b>Страховые взносы</b><span>Не начато</span></div><span class="badge b-gray">Ожидание</span></div>
+      <div class="step"><div class="snum w">7</div><div class="step-info"><b>Амортизация</b><span>Не начато</span></div><span class="badge b-gray">Ожидание</span></div>
+      <div class="step"><div class="snum w">8</div><div class="step-info"><b>Формирование отчётов</b><span>Не начато</span></div><span class="badge b-gray">Ожидание</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 11: RECEIVABLES ═══ -->
+<div class="screen" id="screen-11">
+  <div class="topbar"><button class="tb-menu" onclick="sbToggle()">☰</button><span class="tb-title">Дебиторская задолженность</span></div>
+  <div class="pc">
+    <div class="g3">
+      <div class="sc"><div class="sc-lbl">Всего дебиторка</div><div class="sc-val">3 240 000 ₽</div></div>
+      <div class="sc"><div class="sc-lbl">Просрочено</div><div class="sc-val" style="color:var(--err)">890 000 ₽</div><div class="sc-sub sc-dn">1 контрагент</div></div>
+      <div class="sc"><div class="sc-lbl">Риск взыскания</div><div class="sc-val" style="color:var(--warn)">340 000 ₽</div><div class="sc-sub">1 контрагент</div></div>
+    </div>
+    <div class="tw"><table><thead><tr><th>Контрагент</th><th>Сумма</th><th>Дней просрочки</th><th>Риск</th><th>Действие</th></tr></thead><tbody>
+      <tr><td class="tdl">ООО «Техника+»</td><td>890 000 ₽</td><td style="color:var(--err);font-weight:700">45</td><td><span class="badge b-err">Высокий</span></td><td><button class="btn btn-e btn-sm">Претензия</button></td></tr>
+      <tr><td class="tdl">ИП Смирнов</td><td>340 000 ₽</td><td style="color:var(--warn);font-weight:600">28</td><td><span class="badge b-warn">Средний</span></td><td><button class="btn btn-s btn-sm">Напоминание</button></td></tr>
+      <tr><td class="tdl">ООО «Альфа»</td><td>2 010 000 ₽</td><td>12</td><td><span class="badge b-ok">Низкий</span></td><td><button class="btn btn-s btn-sm">Просмотр</button></td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 12: PAYABLES ═══ -->
+<div class="screen" id="screen-12">
+  <div class="topbar"><button class="tb-menu" onclick="sbToggle()">☰</button><span class="tb-title">Кредиторская задолженность</span></div>
+  <div class="pc">
+    <div class="g3">
+      <div class="sc"><div class="sc-lbl">Всего кредиторка</div><div class="sc-val">1 890 000 ₽</div></div>
+      <div class="sc"><div class="sc-lbl">Просрочено</div><div class="sc-val" style="color:var(--err)">540 000 ₽</div></div>
+      <div class="sc"><div class="sc-lbl">К оплате (7 дней)</div><div class="sc-val" style="color:var(--warn)">1 350 000 ₽</div></div>
+    </div>
+    <div class="tw"><table><thead><tr><th>Контрагент</th><th>Сумма</th><th>Срок оплаты</th><th>Статус</th><th>Действие</th></tr></thead><tbody>
+      <tr><td class="tdl">ООО «Стройматериалы»</td><td>540 000 ₽</td><td style="color:var(--err)">20.07.2025</td><td><span class="badge b-err">Просрочено</span></td><td><button class="btn btn-p btn-sm">Оплатить</button></td></tr>
+      <tr><td class="tdl">ООО «Логистик»</td><td>1 350 000 ₽</td><td>28.07.2025</td><td><span class="badge b-ok">В срок</span></td><td><button class="btn btn-s btn-sm">Оплатить</button></td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 13: TASKS ═══ -->
+<div class="screen" id="screen-13">
+  <div class="topbar"><button class="tb-menu" onclick="sbToggle()">☰</button><span class="tb-title">Задачи</span><button class="btn btn-p btn-sm">+ Задача</button></div>
+  <div class="pc">
+    <div class="g3">
+      <div class="sc"><div class="sc-lbl">Активных задач</div><div class="sc-val">12</div></div>
+      <div class="sc"><div class="sc-lbl">Просрочено</div><div class="sc-val" style="color:var(--err)">3</div></div>
+      <div class="sc"><div class="sc-lbl">Выполнено (июль)</div><div class="sc-val sc-up" style="color:var(--ok)">28</div></div>
+    </div>
+    <div class="tw"><table><thead><tr><th>Задача</th><th>Исполнитель</th><th>Срок</th><th>Приоритет</th><th>Статус</th></tr></thead><tbody>
+      <tr><td class="tdl">Исправить ИНН в СФ-0891</td><td>Петрова К.А.</td><td style="color:var(--err)">Сегодня</td><td><span class="badge b-err">Высокий</span></td><td><span class="badge b-warn">В работе</span></td></tr>
+      <tr><td class="tdl">Ответ на требование ФНС</td><td>Петрова К.А.</td><td style="color:var(--err)">22.07.2025</td><td><span class="badge b-err">Критично</span></td><td><span class="badge b-warn">В работе</span></td></tr>
+      <tr><td class="tdl">Проверить дубль платежа</td><td>Петрова К.А.</td><td>Сегодня</td><td><span class="badge b-warn">Средний</span></td><td><span class="badge b-gray">Новая</span></td></tr>
+      <tr><td class="tdl">Формирование 6-НДФЛ</td><td>Петрова К.А.</td><td>28.07.2025</td><td><span class="badge b-info">Низкий</span></td><td><span class="badge b-gray">Новая</span></td></tr>
+      <tr><td class="tdl">Закрытие июля — НДС</td><td>Петрова К.А.</td><td>31.07.2025</td><td><span class="badge b-warn">Средний</span></td><td><span class="badge b-info">Запланирована</span></td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 14: CONTRACTORS ═══ -->
+<div class="screen" id="screen-14">
+  <div class="topbar"><button class="tb-menu" onclick="sbToggle()">☰</button><span class="tb-title">Контрагенты</span><button class="btn btn-p btn-sm">+ Добавить</button></div>
+  <div class="pc">
+    <div class="fbar">
+      <button class="ftab active" onclick="ft(this)">Все</button>
+      <button class="ftab" onclick="ft(this)">Поставщики</button>
+      <button class="ftab" onclick="ft(this)">Покупатели</button>
+      <button class="ftab" onclick="ft(this)">Риски</button>
+      <input class="sinp" style="margin-left:auto" placeholder="🔍 ИНН или название...">
+    </div>
+    <div class="tw"><table><thead><tr><th>Наименование</th><th>ИНН</th><th>Тип</th><th>Оборот (год)</th><th>Риск ФНС</th><th></th></tr></thead><tbody>
+      <tr><td class="tdl">ООО «Альфа»</td><td style="color:var(--err)">7701234568 ⚠️</td><td>Покупатель</td><td>2 010 000 ₽</td><td><span class="badge b-err">Высокий</span></td><td><button class="btn btn-s btn-sm">Проверить</button></td></tr>
+      <tr><td class="tdl">ООО «Стройматериалы»</td><td>7712345678</td><td>Поставщик</td><td>1 840 000 ₽</td><td><span class="badge b-ok">Низкий</span></td><td><button class="btn btn-s btn-sm">Открыть</button></td></tr>
+      <tr><td class="tdl">ООО «Логистик»</td><td>7723456789</td><td>Поставщик</td><td>940 000 ₽</td><td><span class="badge b-ok">Низкий</span></td><td><button class="btn btn-s btn-sm">Открыть</button></td></tr>
+      <tr><td class="tdl">ООО «Техника+»</td><td>7734567890</td><td>Покупатель</td><td>890 000 ₽</td><td><span class="badge b-warn">Средний</span></td><td><button class="btn btn-s btn-sm">Открыть</button></td></tr>
+      <tr><td class="tdl">ИП Смирнов А.П.</td><td>771234567890</td><td>Покупатель</td><td>340 000 ₽</td><td><span class="badge b-warn">Средний</span></td><td><button class="btn btn-s btn-sm">Открыть</button></td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 15: NOTIFICATIONS ═══ -->
+<div class="screen" id="screen-15">
+  <div class="topbar"><button class="tb-menu" onclick="sbToggle()">☰</button><span class="tb-title">Уведомления</span><button class="btn btn-g btn-sm" onclick="markRead()">Прочитать все</button></div>
+  <div class="pc">
+    <div class="fbar">
+      <button class="ftab active" onclick="nfilt(this,'all')">Все <span class="badge b-info" style="margin-left:4px">12</span></button>
+      <button class="ftab" onclick="nfilt(this,'err')">Ошибки <span class="badge b-err" style="margin-left:4px">3</span></button>
+      <button class="ftab" onclick="nfilt(this,'warn')">Предупреждения</button>
+      <button class="ftab" onclick="nfilt(this,'ok')">Инфо</button>
+    </div>
+    <div class="notif-list">
+      <div class="notif-item unread n-err" data-t="err"><div class="notif-icon">🚨</div><div class="notif-body"><div class="notif-title">Ошибка декларации НДС</div><div class="notif-text">Счёт-фактура №СФ-2025-0891 содержит некорректный ИНН контрагента. Требуется исправление до 25.07.</div><div class="notif-meta"><span class="notif-time">2 мин назад</span><span class="badge b-err">Критично</span></div></div><button class="notif-close" onclick="this.closest('.notif-item').remove()">×</button></div>
+      <div class="notif-item unread n-err" data-t="err"><div class="notif-icon">🚨</div><div class="notif-body"><div class="notif-title">Дубль платежа</div><div class="notif-text">Обнаружен возможный дублирующий платёж ООО «Стройматериалы» на 245 000 ₽. Проверьте платёжное поручение №1847.</div><div class="notif-meta"><span class="notif-time">15 мин назад</span><span class="badge b-err">Критично</span></div></div><button class="notif-close" onclick="this.closest('.notif-item').remove()">×</button></div>
+      <div class="notif-item unread n-err" data-t="err"><div class="notif-icon">📋</div><div class="notif-body"><div class="notif-title">Требование ФНС</div><div class="notif-text">Получено требование №ТР-2025-4821 о предоставлении пояснений по НДС. Срок: 5 рабочих дней.</div><div class="notif-meta"><span class="notif-time">1 час назад</span><span class="badge b-err">Срочно</span></div></div><button class="notif-close" onclick="this.closest('.notif-item').remove()">×</button></div>
+      <div class="notif-item unread n-warn" data-t="warn"><div class="notif-icon">⏰</div><div class="notif-body"><div class="notif-title">Срок уплаты НДС</div><div class="notif-text">До уплаты НДС за 2 квартал осталось 3 дня. Сумма: 1 284 000 ₽.</div><div class="notif-meta"><span class="notif-time">3 часа назад</span><span class="badge b-warn">Предупреждение</span></div></div><button class="notif-close" onclick="this.closest('.notif-item').remove()">×</button></div>
+      <div class="notif-item unread n-warn" data-t="warn"><div class="notif-icon">💰</div><div class="notif-body"><div class="notif-title">Просроченная дебиторка</div><div class="notif-text">ООО «Техника+» (долг 890 000 ₽) просрочил оплату на 45 дней. Рекомендуется направить претензию.</div><div class="notif-meta"><span class="notif-time">Вчера</span><span class="badge b-warn">Предупреждение</span></div></div><button class="notif-close" onclick="this.closest('.notif-item').remove()">×</button></div>
+      <div class="notif-item n-ok" data-t="ok"><div class="notif-icon">✅</div><div class="notif-body"><div class="notif-title">Платёж проведён</div><div class="notif-text">Платёжное поручение №1846 на сумму 125 000 ₽ (ООО «Логистик») успешно проведено банком.</div><div class="notif-meta"><span class="notif-time">Вчера</span><span class="badge b-ok">Выполнено</span></div></div><button class="notif-close" onclick="this.closest('.notif-item').remove()">×</button></div>
+      <div class="notif-item n-ok" data-t="ok"><div class="notif-icon">🔄</div><div class="notif-body"><div class="notif-title">Синхронизация с 1С</div><div class="notif-text">Синхронизация данных с базой 1С выполнена. Загружено 247 новых операций.</div><div class="notif-meta"><span class="notif-time">2 дня назад</span><span class="badge b-ok">Система</span></div></div><button class="notif-close" onclick="this.closest('.notif-item').remove()">×</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 16: SETTINGS ═══ -->
+<div class="screen" id="screen-16">
+  <div class="topbar"><button class="tb-menu" onclick="sbToggle()">☰</button><span class="tb-title">Настройки</span></div>
+  <div class="pc">
+    <div class="settings-wrap">
+      <div class="settings-tabs">
+        <div class="st-item active" onclick="stab(this,'st-profile')">👤 Профиль</div>
+        <div class="st-item" onclick="stab(this,'st-company')">🏢 Компания</div>
+        <div class="st-item" onclick="stab(this,'st-1c')">🔗 1С</div>
+        <div class="st-item" onclick="stab(this,'st-ai')">🤖 ИИ</div>
+        <div class="st-item" onclick="stab(this,'st-notif')">🔔 Уведомления</div>
+        <div class="st-item" onclick="stab(this,'st-users')">👥 Пользователи</div>
+        <div class="st-item" onclick="stab(this,'st-sec')">🔒 Безопасность</div>
+      </div>
+      <div class="settings-body">
+        <div class="stab active" id="st-profile">
+          <div class="s-title">Профиль пользователя</div>
+          <div class="s-av-row"><div class="s-av" id="prof-av">ПК</div><div><div style="font-weight:700" id="prof-name">Петрова Карина Алексеевна</div><div style="color:var(--text2);font-size:13px" id="prof-role">Главный бухгалтер</div></div></div>
+          <div class="s-row"><div class="s-lbl">Полное имя</div><div class="s-val"><input class="s-inp" value="Петрова Карина Алексеевна"></div></div>
+          <div class="s-row"><div class="s-lbl">Email</div><div class="s-val"><input class="s-inp" value="k.petrova@techprom.ru"></div></div>
+          <div class="s-row"><div class="s-lbl">Телефон</div><div class="s-val"><input class="s-inp" value="+7 (495) 123-45-67"></div></div>
+          <div class="s-row"><div class="s-lbl">Язык интерфейса</div><div class="s-val"><select class="s-sel"><option selected>Русский</option><option>English</option></select></div></div>
+          <button class="btn btn-p" style="margin-top:16px">Сохранить изменения</button>
+        </div>
+        <div class="stab" id="st-company">
+          <div class="s-title">Реквизиты компании</div>
+          <div class="s-row"><div class="s-lbl">Наименование</div><div class="s-val"><input class="s-inp" value="ООО «ТехПром»"></div></div>
+          <div class="s-row"><div class="s-lbl">ИНН</div><div class="s-val"><input class="s-inp" value="7701234567"></div></div>
+          <div class="s-row"><div class="s-lbl">КПП</div><div class="s-val"><input class="s-inp" value="770101001"></div></div>
+          <div class="s-row"><div class="s-lbl">ОГРН</div><div class="s-val"><input class="s-inp" value="1027700123456"></div></div>
+          <div class="s-row"><div class="s-lbl">Система налогообложения</div><div class="s-val"><select class="s-sel"><option selected>ОСНО</option><option>УСН 6%</option><option>УСН 15%</option></select></div></div>
+          <div class="s-row"><div class="s-lbl">Плательщик НДС</div><div class="s-val"><label class="toggle"><input type="checkbox" checked><span class="tslide"></span></label></div></div>
+          <button class="btn btn-p" style="margin-top:16px">Сохранить</button>
+        </div>
+        <div class="stab" id="st-1c">
+          <div class="s-title">Подключение к 1С</div>
+          <div class="alert alert-ok" style="margin-bottom:16px">🟢 Подключено: 1С:Бухгалтерия 8.3 — prod-1c.techprom.ru</div>
+          <div class="s-row"><div class="s-lbl">Адрес сервера</div><div class="s-val"><input class="s-inp" value="http://prod-1c.techprom.ru:8080"></div></div>
+          <div class="s-row"><div class="s-lbl">База данных</div><div class="s-val"><input class="s-inp" value="Accounting_2025"></div></div>
+          <div class="s-row"><div class="s-lbl">Пользователь</div><div class="s-val"><input class="s-inp" value="glavbuh_api"></div></div>
+          <div class="s-row"><div class="s-lbl">Интервал синхронизации</div><div class="s-val"><select class="s-sel"><option>Каждые 5 мин</option><option selected>Каждые 15 мин</option><option>Каждый час</option></select></div></div>
+          <div class="btn-row" style="margin-top:16px"><button class="btn btn-s" onclick="t1c(event)">Проверить подключение</button><button class="btn btn-p">Сохранить</button></div>
+        </div>
+        <div class="stab" id="st-ai">
+          <div class="s-title">ИИ-ассистент</div>
+          <div class="s-row"><div class="s-lbl">Модель ИИ</div><div class="s-val"><select class="s-sel"><option selected>GigaChat Pro</option><option>YandexGPT 4</option><option>GPT-4o</option><option>Claude 3.5</option></select></div></div>
+          <div class="s-row"><div class="s-lbl">ИИ активен</div><div class="s-val"><label class="toggle"><input type="checkbox" checked><span class="tslide"></span></label></div></div>
+          <div class="s-row"><div class="s-lbl">Авто-анализ документов</div><div class="s-val"><label class="toggle"><input type="checkbox" checked><span class="tslide"></span></label></div></div>
+          <div class="s-row"><div class="s-lbl">Проверка контрагентов</div><div class="s-val"><label class="toggle"><input type="checkbox" checked><span class="tslide"></span></label></div></div>
+          <div class="s-row"><div class="s-lbl">API-ключ</div><div class="s-val"><input class="s-inp" type="password" value="••••••••••••••••"></div></div>
+          <button class="btn btn-p" style="margin-top:16px">Сохранить</button>
+        </div>
+        <div class="stab" id="st-notif">
+          <div class="s-title">Уведомления</div>
+          <div class="s-row"><div class="s-lbl">Email-уведомления</div><div class="s-val"><label class="toggle"><input type="checkbox" checked><span class="tslide"></span></label></div></div>
+          <div class="s-row"><div class="s-lbl">Критические ошибки</div><div class="s-val"><label class="toggle"><input type="checkbox" checked><span class="tslide"></span></label></div></div>
+          <div class="s-row"><div class="s-lbl">Сроки налогов</div><div class="s-val"><label class="toggle"><input type="checkbox" checked><span class="tslide"></span></label></div></div>
+          <div class="s-row"><div class="s-lbl">Напоминать за</div><div class="s-val"><select class="s-sel"><option>1 день</option><option>2 дня</option><option selected>3 дня</option><option>7 дней</option></select></div></div>
+          <button class="btn btn-p" style="margin-top:16px">Сохранить</button>
+        </div>
+        <div class="stab" id="st-users">
+          <div class="s-title">Пользователи</div>
+          <div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-p btn-sm">+ Добавить</button></div>
+          <div class="tw"><table><thead><tr><th>Имя</th><th>Email</th><th>Роль</th><th>Статус</th></tr></thead><tbody>
+            <tr><td>Петрова К.А.</td><td>k.petrova@tp.ru</td><td><span class="badge b-info">Бухгалтер</span></td><td><span class="badge b-ok">Активен</span></td></tr>
+            <tr><td>Соколов Д.М.</td><td>d.sokolov@tp.ru</td><td><span class="badge b-warn">Директор</span></td><td><span class="badge b-ok">Активен</span></td></tr>
+            <tr><td>Иванова М.С.</td><td>m.ivanova@tp.ru</td><td><span class="badge b-gray">Оператор</span></td><td><span class="badge b-ok">Активен</span></td></tr>
+          </tbody></table></div>
+        </div>
+        <div class="stab" id="st-sec">
+          <div class="s-title">Безопасность</div>
+          <div class="s-row"><div class="s-lbl">Двухфакторная аутентификация</div><div class="s-val"><label class="toggle"><input type="checkbox"><span class="tslide"></span></label></div></div>
+          <div class="s-row"><div class="s-lbl">Таймаут сессии</div><div class="s-val"><select class="s-sel"><option>30 мин</option><option selected>1 час</option><option>4 часа</option></select></div></div>
+          <div class="s-row"><div class="s-lbl">Логировать действия</div><div class="s-val"><label class="toggle"><input type="checkbox" checked><span class="tslide"></span></label></div></div>
+          <div class="s-title" style="margin-top:20px">Смена пароля</div>
+          <div class="s-row"><div class="s-lbl">Текущий пароль</div><div class="s-val"><input class="s-inp" type="password" placeholder="Текущий пароль"></div></div>
+          <div class="s-row"><div class="s-lbl">Новый пароль</div><div class="s-val"><input class="s-inp" type="password" placeholder="Минимум 8 символов"></div></div>
+          <button class="btn btn-p" style="margin-top:16px">Изменить пароль</button>
         </div>
       </div>
     </div>
@@ -306,1163 +920,212 @@ tr:hover td{background:#FAFBFC}
 </div>
 
 
-<!-- NAVIGATION SIDEBAR -->
-<nav class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <div class="sidebar-logo">
-      <span class="sidebar-logo-icon">ГБ</span>
-      <span class="sidebar-logo-text">GLAVBUH<span style="color:var(--accent)">.AI</span></span>
-    </div>
-    <button class="sidebar-close" onclick="toggleNav()">✕</button>
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sb">
+  <div class="sb-head">
+    <div class="sb-brand"><div class="sb-icon">ГБ</div><span class="sb-name">GLAVBUH.AI</span></div>
+    <button class="sb-x" onclick="sbToggle()">✕</button>
   </div>
-  <div class="sidebar-role">
-    <div class="role-switcher" id="role-switcher">
-      <div class="role-avatar" id="role-avatar">ДС</div>
-      <div class="role-info">
-        <div class="role-name" id="role-name">Соколов Д.М.</div>
-        <div class="role-title" id="role-title">Директор</div>
-      </div>
-      <button class="role-switch-btn" onclick="cycleRole()" title="Сменить роль">⇄</button>
-    </div>
+  <div class="sb-user">
+    <div class="sb-av" id="sb-av">ПК</div>
+    <div><div class="sb-uname" id="sb-uname">—</div><div class="sb-urole" id="sb-urole">—</div></div>
+    <button class="sb-switch" onclick="cycleRole()" title="Сменить роль">⇄</button>
   </div>
-  <div class="sidebar-nav" id="sidebar-nav">
-    <!-- filled by JS based on role -->
-  </div>
-  <div class="sidebar-footer">
-    <div class="nav-item" onclick="navigate('screen-16')">⚙️ Настройки</div>
-    <div class="nav-item" onclick="doLogout()">← Выйти</div>
+  <div class="sb-nav" id="sb-nav"></div>
+  <div class="sb-foot">
+    <button class="ni" onclick="nav('screen-16')"><span class="ni-ic">⚙️</span>Настройки</button>
+    <button class="ni" onclick="doLogout()"><span class="ni-ic">←</span>Выйти</button>
   </div>
 </nav>
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleNav()"></div>
+<div class="sb-overlay" id="sb-ov" onclick="sbToggle()"></div>
 
-<!-- MODAL: Add User -->
-<div class="modal-overlay" id="modal-add-user">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title">Новый пользователь</div>
-      <button class="modal-close" onclick="closeModal('modal-add-user')">✕</button>
-    </div>
+<!-- MODALS -->
+<div class="modal-overlay" id="m-pay">
+  <div class="modal">
+    <div class="modal-hdr"><h3>Новый платёж</h3><button class="modal-x" onclick="closeM('m-pay')">✕</button></div>
     <div class="modal-body">
-      <div class="form-group">
-        <label class="form-label">Полное имя</label>
-        <input class="form-control" placeholder="Фамилия Имя Отчество">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Email</label>
-        <input class="form-control" type="email" placeholder="user@company.ru">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Роль</label>
-        <select class="form-control">
-          <option>Бухгалтер</option>
-          <option>Оператор</option>
-          <option>Директор</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Временный пароль</label>
-        <input class="form-control" type="password" placeholder="Минимум 8 символов">
+      <div class="fg"><label class="lbl">Получатель</label><input class="inp" placeholder="ИНН или наименование"></div>
+      <div class="fg"><label class="lbl">Сумма (₽)</label><input class="inp" type="number" placeholder="0.00"></div>
+      <div class="fg"><label class="lbl">Назначение платежа</label><input class="inp" placeholder="Оплата по договору №..."></div>
+      <div class="fg"><label class="lbl">Дата</label><input class="inp" type="date"></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-g" onclick="closeM('m-pay')">Отмена</button><button class="btn btn-p">Создать</button></div>
+  </div>
+</div>
+<div class="modal-overlay" id="m-dup">
+  <div class="modal">
+    <div class="modal-hdr"><h3>Возможный дубль платежа</h3><button class="modal-x" onclick="closeM('m-dup')">✕</button></div>
+    <div class="modal-body">
+      <div class="alert alert-warn">⚠️ Обнаружен похожий платёж, проведённый 3 дня назад</div>
+      <div class="doc-grid" style="margin-top:12px">
+        <div class="doc-field"><div class="doc-field-lbl">Получатель</div><div class="doc-field-val">ООО «Стройматериалы»</div></div>
+        <div class="doc-field"><div class="doc-field-lbl">Сумма</div><div class="doc-field-val" style="color:var(--err);font-weight:700">245 000 ₽</div></div>
+        <div class="doc-field"><div class="doc-field-lbl">Предыдущий платёж</div><div class="doc-field-val">245 000 ₽ · 12.07.2025</div></div>
+        <div class="doc-field"><div class="doc-field-lbl">Назначение</div><div class="doc-field-val">Оплата по договору №123</div></div>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-add-user')">Отмена</button>
-      <button class="btn btn-primary">Создать пользователя</button>
+      <button class="btn btn-g" onclick="closeM('m-dup')">Отмена</button>
+      <button class="btn btn-e" onclick="closeM('m-dup')">Провести всё равно</button>
+      <button class="btn btn-p" onclick="closeM('m-dup')">На проверку</button>
     </div>
   </div>
 </div>
-
-<!-- MODAL: Confirm Payment -->
-<div class="modal-overlay" id="modal-confirm-payment">
-  <div class="modal-box">
-    <div class="modal-header">
-      <div class="modal-title">Подтвердить платёж</div>
-      <button class="modal-close" onclick="closeModal('modal-confirm-payment')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div style="background:var(--warn-lt);border:1px solid var(--warn);border-radius:var(--r);padding:12px;margin-bottom:16px;font-size:14px">
-        ⚠️ Обнаружен возможный дубль! Аналогичный платёж был проведён 3 дня назад.
-      </div>
-      <div class="doc-preview-row"><span class="doc-preview-label">Получатель</span><span>ООО «Стройматериалы»</span></div>
-      <div class="doc-preview-row"><span class="doc-preview-label">Сумма</span><span style="font-weight:700;color:var(--err)">245 000 ₽</span></div>
-      <div class="doc-preview-row"><span class="doc-preview-label">Назначение</span><span>Оплата по договору №123</span></div>
-      <div class="doc-preview-row"><span class="doc-preview-label">Дата</span><span>15.07.2025</span></div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" onclick="closeModal('modal-confirm-payment')">Отмена</button>
-      <button class="btn btn-err">Всё равно провести</button>
-      <button class="btn btn-primary">Отправить на проверку</button>
-    </div>
-  </div>
-</div>
-
-
-<!-- SCREEN 0: DIRECTOR DASHBOARD -->
-<div class="page active" id="p0">
-<div class="page-hdr">
-  <div><div class="page-title">Доброе утро, Сергей Алексеевич</div><div class="page-sub">Среда, 13 мая 2026 · ООО "Ромашка" · ОСНО + НДС</div></div>
-  <div class="btn-row"><button class="btn bs btn-sm" onclick="toggleChat()">💬 Спросить AI</button><button class="btn bp btn-sm" onclick="showModal()">+ Создать</button></div>
-</div>
-<div class="ai-banner"><div class="ai-banner-ic">🤖</div><div class="ai-banner-txt"><b>AI-агент:</b> Сегодня до 20 мая — срок уплаты НДС (890 000 ₽). ИП Кузнецов ждёт оплату — просрочка с сегодня. Обнаружен дубль платежа на 45 000 ₽.</div></div>
-<div class="sg sg4">
-  <div class="sc"><div class="lbl">На счетах</div><div class="val">2 450 000 ₽</div><div class="sub up">▲ +120 000 за день</div></div>
-  <div class="sc"><div class="lbl">Дебиторка</div><div class="val" style="color:var(--err)">260 000 ₽</div><div class="sub dn">▲ 30 000 просрочено</div></div>
-  <div class="sc"><div class="lbl">Кредиторка</div><div class="val" style="color:var(--warn)">225 000 ₽</div><div class="sub dn">Платёж сегодня!</div></div>
-  <div class="sc"><div class="lbl">Прибыль (май)</div><div class="val" style="color:var(--ok)">550 000 ₽</div><div class="sub">Маржа: 61%</div></div>
-</div>
-<div class="sg sg2">
-  <div>
-    <div class="card">
-      <div class="card-hdr"><h3>💰 Деньги на счетах</h3><button class="btn bs btn-sm">Выписка</button></div>
-      <table><tr><th>Банк</th><th>Счёт</th><th>Остаток</th><th>Изменение</th></tr>
-      <tr><td>🏦 Сбербанк</td><td>40702...1234</td><td style="font-weight:700">1 850 000 ₽</td><td class="sub up">+180 000</td></tr>
-      <tr><td>🏦 Тинькофф</td><td>40702...5678</td><td style="font-weight:700">600 000 ₽</td><td class="sub dn">−60 000</td></tr>
-      </table>
-    </div>
-    <div class="card">
-      <div class="card-hdr"><h3>👥 Дебиторы — нам должны</h3><span style="color:var(--err);font-weight:700">260 000 ₽</span></div>
-      <table><tr><th>Контрагент</th><th>Сумма</th><th>Дней</th><th>Риск</th><th></th></tr>
-      <tr><td class="tdl">ООО Альфа</td><td>150 000 ₽</td><td><span class="badge bok">Вовремя</span></td><td><span class="rbl">Низкий</span></td><td><button class="btn bs btn-sm">Напомнить</button></td></tr>
-      <tr><td class="tdl">ИП Петров</td><td>80 000 ₽</td><td><span class="badge bwarn">5 дней</span></td><td><span class="rbm">Средний</span></td><td><button class="btn bs btn-sm">Напомнить</button></td></tr>
-      <tr><td class="tdl">ООО Бета</td><td>30 000 ₽</td><td><span class="badge berr">21 день</span></td><td><span class="rbh">Высокий</span></td><td><button class="btn bd btn-sm" onclick="showModal()">Блокировать</button></td></tr>
-      </table>
-    </div>
-    <div class="card">
-      <div class="card-hdr"><h3>📋 Задачи бухгалтеру</h3><button class="btn bp btn-sm" onclick="nav(13,this)">+ Задача</button></div>
-      <div class="task-row"><div class="tpri h"></div><div class="task-txt"><div class="t">Разнести банковскую выписку за 13.05</div><div class="s">Назначено: Иванова А.С. · Срок: сегодня</div></div><span class="badge berr">Срочно</span></div>
-      <div class="task-row"><div class="tpri m"></div><div class="task-txt"><div class="t">Подготовить декларацию НДС за Q1</div><div class="s">Назначено: Иванова А.С. · Срок: 20 мая</div></div><span class="badge bwarn">В работе</span></div>
-      <div class="task-row"><div class="tpri l"></div><div class="task-txt"><div class="t">Акт с ООО Ромашка — подписан</div><div class="s">Выполнено 12.05</div></div><span class="badge bok">✓ Готово</span></div>
-    </div>
-  </div>
-  <div>
-    <div class="card">
-      <div class="card-hdr"><h3>📉 P&amp;L простым языком</h3><button class="btn bs btn-sm" onclick="nav(9,this)">Открыть отчёт</button></div>
-      <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Выручка</span><span style="font-weight:700;color:var(--ok)">890 000 ₽</span></div><div class="progress"><div class="pbar ok" style="width:89%"></div></div></div>
-      <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Расходы</span><span style="font-weight:700;color:var(--err)">340 000 ₽</span></div><div class="progress"><div class="pbar err" style="width:34%"></div></div></div>
-      <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Прибыль</span><span style="font-weight:700;color:var(--accent)">550 000 ₽</span></div><div class="progress"><div class="pbar blue" style="width:61%"></div></div></div>
-      <div style="font-size:12px;color:var(--text2);margin-top:8px">▲ На 15% лучше апреля · Налоговая нагрузка: 12%</div>
-    </div>
-    <div class="card">
-      <div class="card-hdr"><h3>🔔 Налоговый календарь</h3><button class="btn bs btn-sm" onclick="nav(8,this)">Все налоги</button></div>
-      <div class="cal-ev"><div class="cal-stripe" style="background:var(--err)"></div><div class="cal-date" style="color:var(--err)">20 мая</div><div class="cal-b"><div class="t">НДС — уплата 1/3</div><div class="s">890 000 ₽ · Просрочен!</div></div><span class="badge berr">!</span></div>
-      <div class="cal-ev"><div class="cal-stripe" style="background:var(--warn)"></div><div class="cal-date" style="color:var(--warn)">25 мая</div><div class="cal-b"><div class="t">Декларация НДС Q1</div><div class="s">Статус: Ожидает подписи</div></div><span class="badge bwarn">7 дн</span></div>
-      <div class="cal-ev"><div class="cal-stripe" style="background:var(--warn)"></div><div class="cal-date" style="color:var(--warn)">28 мая</div><div class="cal-b"><div class="t">Аванс УСН — Q1</div><div class="s">Рассчитывается агентом</div></div><span class="badge bwarn">15 дн</span></div>
-      <div class="cal-ev"><div class="cal-stripe" style="background:var(--ok)"></div><div class="cal-date" style="color:var(--ok)">30 июня</div><div class="cal-b"><div class="t">6-НДФЛ — полугодие</div><div class="s">Есть время</div></div><span class="badge bok">✓</span></div>
-    </div>
-    <div class="card">
-      <div class="card-hdr"><h3>⚠️ Риски и аномалии</h3></div>
-      <div class="notif-item"><div class="nic err">⚠️</div><div class="nb"><div class="nt">Дубль платежа</div><div class="ns">ИП Кузнецов — 45 000 ₽ (2 раза 07.05)</div></div><button class="btn bd btn-sm">Проверить</button></div>
-      <div class="notif-item"><div class="nic warn">📊</div><div class="nb"><div class="nt">Нетипичный расход</div><div class="ns">ООО Снаб — 410 000 ₽ без договора</div></div><button class="btn bs btn-sm">Открыть</button></div>
-      <div class="notif-item"><div class="nic err">🔴</div><div class="nb"><div class="nt">Отрицательный остаток</div><div class="ns">Счёт 60 — кредиторка превысила лимит</div></div><button class="btn bs btn-sm">Передать</button></div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- SCREEN 1: ACCOUNTANT DASHBOARD -->
-<div class="page" id="p1">
-<div class="page-hdr"><div><div class="page-title">Рабочий стол бухгалтера</div><div class="page-sub">Анна Сергеевна Иванова · Главный бухгалтер</div></div>
-<div class="btn-row"><button class="btn bs btn-sm">📥 Загрузить документ</button><button class="btn bp btn-sm" onclick="showModal()">+ Создать</button></div></div>
-<div class="sg sg4">
-  <div class="sc"><div class="lbl">Входящих сегодня</div><div class="val">12</div><div class="sub">4 требуют проверки</div></div>
-  <div class="sc"><div class="lbl">Ошибки НДС</div><div class="val" style="color:var(--err)">3</div><div class="sub dn">Нужно исправить</div></div>
-  <div class="sc"><div class="lbl">Платежи на подписи</div><div class="val" style="color:var(--warn)">2</div><div class="sub">У директора</div></div>
-  <div class="sc"><div class="lbl">Закрытие мая</div><div class="val" style="color:var(--text2)">18 дн</div><div class="sub">До конца месяца</div></div>
-</div>
-<div class="sg sg2">
-<div>
-  <div class="card">
-    <div class="card-hdr"><h3>📥 Входящие документы</h3><button class="btn bp btn-sm" onclick="nav(5,this)">Все →</button></div>
-    <table><tr><th>Документ</th><th>Контрагент</th><th>Сумма</th><th>Статус</th></tr>
-    <tr><td class="tdl">УПД №145</td><td>ООО Поставщик</td><td>180 000 ₽</td><td><span class="badge binfo">Распознан</span></td></tr>
-    <tr><td class="tdl">Счёт-ф. №98</td><td>ООО Альфа</td><td>90 000 ₽</td><td><span class="badge bwarn">Проверить</span></td></tr>
-    <tr><td class="tdl">ТОРГ-12 №7</td><td>ИП Кузнецов</td><td>45 000 ₽</td><td><span class="badge berr">Ошибка НДС</span></td></tr>
-    <tr><td class="tdl">Акт №38</td><td>ООО Бета</td><td>67 500 ₽</td><td><span class="badge bgray">Загружен</span></td></tr>
-    </table>
-  </div>
-  <div class="card">
-    <div class="card-hdr"><h3>🏦 НДС — проверка</h3><button class="btn bs btn-sm" onclick="nav(8,this)">Раздел НДС →</button></div>
-    <div style="margin-bottom:10px;padding:10px;background:var(--err-lt);border-radius:var(--r);border:1px solid #FECACA">
-      <div style="font-weight:700;font-size:13px;color:var(--err);margin-bottom:4px">⚠️ 3 ошибки в книге покупок</div>
-      <div style="font-size:12px;color:var(--text2)">Отсутствуют счета-фактуры · Неверная ставка НДС · Дубль</div>
-    </div>
-    <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;padding:8px;background:var(--bg);border-radius:var(--r)">
-      <span>НДС к уплате Q1</span><span style="font-weight:700;color:var(--err)">890 000 ₽</span>
-    </div>
-    <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px;background:var(--bg);border-radius:var(--r)">
-      <span>НДС к вычету</span><span style="font-weight:700;color:var(--ok)">234 000 ₽</span>
-    </div>
-  </div>
-</div>
-<div>
-  <div class="card">
-    <div class="card-hdr"><h3>📋 Закрытие месяца</h3><button class="btn bs btn-sm" onclick="nav(10,this)">Перейти →</button></div>
-    <div class="step-list">
-      <div class="step"><div class="snum done">✓</div><div class="step-body"><div class="t">Разноска банковских выписок</div><div class="s">Выполнено · 8 операций проведено</div></div><span class="badge bok">Готово</span></div>
-      <div class="step"><div class="snum act">2</div><div class="step-body"><div class="t">Проверка книги покупок</div><div class="s">В процессе · 3 ошибки</div></div><span class="badge bwarn">Ошибки</span></div>
-      <div class="step"><div class="snum wait">3</div><div class="step-body"><div class="t">Закрытие счетов 26 и 44</div><div class="s">Ожидает</div></div><span class="badge bgray">Ожидает</span></div>
-      <div class="step"><div class="snum wait">4</div><div class="step-body"><div class="t">Начисление амортизации</div><div class="s">Ожидает</div></div><span class="badge bgray">Ожидает</span></div>
-      <div class="step"><div class="snum wait">5</div><div class="step-body"><div class="t">Расчёт себестоимости</div><div class="s">Ожидает</div></div><span class="badge bgray">Ожидает</span></div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-hdr"><h3>📝 Требования ФНС</h3><button class="btn bs btn-sm">Ответить →</button></div>
-    <div class="notif-item"><div class="nic err">🏛️</div><div class="nb"><div class="nt">Требование №А77-12345</div><div class="ns">Пояснения к НДС за Q4 2025 · Срок: 25.05</div></div><span class="badge berr">Срочно</span></div>
-    <div class="notif-item"><div class="nic warn">📄</div><div class="nb"><div class="nt">Запрос документов</div><div class="ns">Договоры с ООО Альфа за 2025 · Срок: 01.06</div></div><span class="badge bwarn">8 дн</span></div>
-  </div>
-  <div class="card">
-    <div class="card-hdr"><h3>✅ Задачи от директора</h3><button class="btn bs btn-sm" onclick="nav(13,this)">Все →</button></div>
-    <div class="task-row"><div class="tpri h"></div><div class="task-txt"><div class="t">Сверить дебиторку по ООО Бета</div><div class="s">от Директора · Срок: 15.05</div></div><span class="badge berr">Срочно</span></div>
-    <div class="task-row"><div class="tpri m"></div><div class="task-txt"><div class="t">Подготовить акт сверки по ИП Петров</div><div class="s">от Директора · Срок: 18.05</div></div><span class="badge bwarn">В работе</span></div>
-  </div>
-</div>
-</div>
-</div>
-
-<!-- SCREEN 2: AI CHAT MAIN -->
-<div class="page" id="p2">
-<div class="page-hdr"><div><div class="page-title">💬 AI-агент главного бухгалтера</div><div class="page-sub">Работает с данными 1С · Все действия требуют подтверждения</div></div></div>
-<div class="sg sg2" style="height:calc(100vh - 160px)">
-<div style="display:flex;flex-direction:column;height:100%">
-  <div class="card" style="flex:1;overflow-y:auto;margin-bottom:8px;padding:0">
-    <div style="padding:14px;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;border-bottom:1px solid var(--border)">История диалогов</div>
-    <div style="padding:8px">
-      <div style="padding:8px 12px;border-radius:var(--r);background:var(--accent-lt);border:1px solid var(--accent);font-size:13px;margin-bottom:6px;cursor:pointer;font-weight:600;color:var(--accent)">💬 Текущий сеанс</div>
-      <div style="padding:8px 12px;border-radius:var(--r);font-size:13px;margin-bottom:6px;cursor:pointer;color:var(--text2)">Проверка НДС — 12.05</div>
-      <div style="padding:8px 12px;border-radius:var(--r);font-size:13px;margin-bottom:6px;cursor:pointer;color:var(--text2)">Дебиторка Альфа — 10.05</div>
-      <div style="padding:8px 12px;border-radius:var(--r);font-size:13px;cursor:pointer;color:var(--text2)">Платёжка ФНС — 08.05</div>
-    </div>
-    <div style="padding:12px;border-top:1px solid var(--border)">
-      <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:8px">Быстрые команды</div>
-      <div style="font-size:12px;color:var(--accent);padding:5px 0;cursor:pointer;border-bottom:1px solid var(--border)">📊 Проверить НДС</div>
-      <div style="font-size:12px;color:var(--accent);padding:5px 0;cursor:pointer;border-bottom:1px solid var(--border)">💰 Сколько денег?</div>
-      <div style="font-size:12px;color:var(--accent);padding:5px 0;cursor:pointer;border-bottom:1px solid var(--border)">📋 Закрыть месяц</div>
-      <div style="font-size:12px;color:var(--accent);padding:5px 0;cursor:pointer">📄 Создать счёт</div>
-    </div>
-  </div>
-</div>
-<div style="display:flex;flex-direction:column;height:100%">
-  <div id="chat-msgs" style="flex:1;overflow-y:auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px;margin-bottom:10px">
-    <div class="msg bot" style="align-self:flex-start">Здравствуйте! Я ваш AI-бухгалтер. Работаю с данными 1С в реальном времени. Задавайте вопросы на русском языке. Все важные действия выполняются только с вашим подтверждением.</div>
-    <div class="msg user" style="align-self:flex-end">Создай счёт для ООО Ромашка на 250 000 рублей с НДС 20%</div>
-    <div class="msg bot">🔍 Ищу контрагента ООО "Ромашка"... Найден. ИНН: 7712345678. Проверяю договор... Договор №12 от 01.03.2026 найден.</div>
-    <div class="msg-card">
-      <div class="msg-card-title">📄 Создание счёта на оплату</div>
-      <div class="msg-card-rows">
-        <div><span>Покупатель</span><span>ООО "Ромашка"</span></div>
-        <div><span>ИНН</span><span>7712345678</span></div>
-        <div><span>Договор</span><span>№12 от 01.03.2026</span></div>
-        <div><span>Сумма без НДС</span><span>208 333 ₽</span></div>
-        <div><span>НДС 20%</span><span>41 667 ₽</span></div>
-        <div><span>Итого с НДС</span><span style="color:var(--accent);font-weight:700">250 000 ₽</span></div>
-      </div>
-      <div style="display:flex;gap:8px"><button class="btn bp btn-sm" onclick="showModal()">✓ Создать счёт</button><button class="btn bs btn-sm">✏️ Изменить</button><button class="btn bs btn-sm">✗ Отмена</button></div>
-    </div>
-    <div class="msg bot">Счёт подготовлен. Проверьте данные и подтвердите создание. Я также могу сразу сформировать PDF для отправки клиенту.</div>
-  </div>
-  <div style="display:flex;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px">
-    <input id="chat-main-in" type="text" class="sinp" style="flex:1;border:none;outline:none;font-size:13px" placeholder="Напишите команду... (напр: 'Проверь НДС' или 'Создай платёжку')">
-    <button class="btn bs btn-sm">🎤</button>
-    <button class="btn bp btn-sm" onclick="sendMainChat()">Отправить →</button>
-  </div>
-</div>
-</div>
-</div>
-
-<!-- SCREEN 3: DOCUMENTS -->
-<div class="page" id="p3">
-<div class="page-hdr"><div><div class="page-title">📁 Документы</div><div class="page-sub">Все входящие и исходящие документы</div></div>
-<div class="btn-row"><button class="btn bp btn-sm">📥 Загрузить</button><button class="btn bs btn-sm" onclick="nav(6,this)">+ Создать</button></div></div>
-<div class="frow">
-  <input class="sinp" type="text" placeholder="🔍 Поиск по номеру, контрагенту..." style="flex:1;min-width:200px">
-  <button class="fbtn act">Все</button><button class="fbtn">Входящие</button><button class="fbtn">Исходящие</button><button class="fbtn">Акты</button><button class="fbtn">Счета</button>
-  <select class="sinp" style="width:140px"><option>Все статусы</option><option>Проведён</option><option>На проверке</option><option>Ошибка</option></select>
-</div>
-<div class="tw"><table>
-  <tr><th>Дата</th><th>Тип</th><th>Номер</th><th>Контрагент</th><th>Сумма</th><th>НДС</th><th>Статус</th><th>Ответственный</th><th>Действия</th></tr>
-  <tr><td>13.05.26</td><td>УПД</td><td class="tdl">№145</td><td>ООО Поставщик</td><td>180 000 ₽</td><td>30 000 ₽</td><td><span class="badge binfo">Распознан</span></td><td>Иванова А.С.</td><td><button class="btn bs btn-sm" onclick="nav(4,this)">Открыть</button></td></tr>
-  <tr><td>13.05.26</td><td>Счёт</td><td class="tdl">№47</td><td>ООО Ромашка</td><td>90 000 ₽</td><td>15 000 ₽</td><td><span class="badge bok">Проведён</span></td><td>Иванова А.С.</td><td><button class="btn bs btn-sm" onclick="nav(4,this)">Открыть</button></td></tr>
-  <tr><td>12.05.26</td><td>ТОРГ-12</td><td class="tdl">№38</td><td>ИП Кузнецов</td><td>45 000 ₽</td><td>—</td><td><span class="badge berr">Ошибка НДС</span></td><td>Петров И.</td><td><button class="btn bd btn-sm">Исправить</button></td></tr>
-  <tr><td>11.05.26</td><td>УПД</td><td class="tdl">№144</td><td>ООО Альфа</td><td>230 000 ₽</td><td>38 333 ₽</td><td><span class="badge bok">Проведён</span></td><td>Иванова А.С.</td><td><button class="btn bs btn-sm" onclick="nav(4,this)">Открыть</button></td></tr>
-  <tr><td>10.05.26</td><td>Накладная</td><td class="tdl">№12</td><td>ООО Бета</td><td>67 500 ₽</td><td>11 250 ₽</td><td><span class="badge bwarn">На проверке</span></td><td>Иванова А.С.</td><td><button class="btn bs btn-sm" onclick="nav(4,this)">Открыть</button></td></tr>
-  <tr><td>09.05.26</td><td>Счёт-ф.</td><td class="tdl">№98</td><td>ООО Поставщик</td><td>150 000 ₽</td><td>25 000 ₽</td><td><span class="badge bwarn">Проверить</span></td><td>Петров И.</td><td><button class="btn bs btn-sm" onclick="nav(4,this)">Открыть</button></td></tr>
-  <tr><td>08.05.26</td><td>Акт</td><td class="tdl">№22</td><td>ИП Соколов</td><td>32 000 ₽</td><td>—</td><td><span class="badge bok">Проведён</span></td><td>Иванова А.С.</td><td><button class="btn bs btn-sm" onclick="nav(4,this)">Открыть</button></td></tr>
-</table></div>
-</div>
-
-<!-- SCREEN 4: DOCUMENT CARD -->
-<div class="page" id="p4">
-<div class="page-hdr"><div><div class="page-title">📄 УПД №145 — ООО Поставщик</div><div class="page-sub">Загружен 13.05.2026 · Источник: OCR · Ответственный: Иванова А.С.</div></div>
-<div class="btn-row"><button class="btn bp btn-sm" onclick="showModal()">✓ Провести в 1С</button><button class="btn bs btn-sm">Передать</button><button class="btn bd btn-sm">Отклонить</button></div></div>
-<div class="sg sg2">
-<div>
-  <div class="card">
-    <div class="card-hdr"><h3>📋 Превью документа</h3></div>
-    <div class="doc-prev"><div style="font-size:32px">📄</div><div>УПД №145</div><div style="font-size:11px">PDF · 2 страницы · 456 KB</div><button class="btn bs btn-sm" style="margin-top:8px">🔍 Открыть полностью</button></div>
-  </div>
-  <div class="card">
-    <div class="card-hdr"><h3>✅ Проверки AI</h3></div>
-    <div class="check-row"><span class="chk-ok">✓</span><span style="flex:1">Контрагент найден в 1С</span><span style="font-size:11px;color:var(--text2)">ООО Поставщик</span></div>
-    <div class="check-row"><span class="chk-ok">✓</span><span style="flex:1">ИНН корректный</span><span style="font-size:11px;color:var(--text2)">7709876543</span></div>
-    <div class="check-row"><span class="chk-ok">✓</span><span style="flex:1">Дубль не найден</span><span style="font-size:11px;color:var(--text2)">Уникальный</span></div>
-    <div class="check-row"><span class="chk-ok">✓</span><span style="flex:1">НДС совпадает</span><span style="font-size:11px;color:var(--text2)">30 000 ₽ = 20%</span></div>
-    <div class="check-row"><span class="chk-warn">⚠</span><span style="flex:1">Договор не найден</span><span style="font-size:11px;color:var(--warn)">Нет в 1С</span></div>
-    <div class="check-row"><span class="chk-ok">✓</span><span style="flex:1">Уверенность OCR</span><span style="font-size:11px;color:var(--text2)">94%</span></div>
-  </div>
-</div>
-<div>
-  <div class="card">
-    <div class="card-hdr"><h3>📝 Реквизиты (распознано OCR)</h3></div>
-    <div class="settings-row"><span class="settings-lbl">Тип документа</span><input class="form-input" value="УПД (счёт-фактура + накладная)"></div>
-    <div class="settings-row"><span class="settings-lbl">Номер</span><input class="form-input" value="145"></div>
-    <div class="settings-row"><span class="settings-lbl">Дата</span><input class="form-input" value="13.05.2026"></div>
-    <div class="settings-row"><span class="settings-lbl">Контрагент</span><input class="form-input" value="ООО Поставщик"></div>
-    <div class="settings-row"><span class="settings-lbl">ИНН</span><input class="form-input" value="7709876543"></div>
-    <div class="settings-row"><span class="settings-lbl">КПП</span><input class="form-input" value="770901001"></div>
-    <div class="settings-row"><span class="settings-lbl">Сумма без НДС</span><input class="form-input" value="150 000,00 ₽"></div>
-    <div class="settings-row"><span class="settings-lbl">НДС 20%</span><input class="form-input" value="30 000,00 ₽"></div>
-    <div class="settings-row"><span class="settings-lbl">Сумма с НДС</span><input class="form-input" value="180 000,00 ₽"></div>
-    <div class="settings-row"><span class="settings-lbl">Номенклатура</span><input class="form-input" value="Канцелярские товары"></div>
-    <div class="settings-row"><span class="settings-lbl">Счёт учёта</span><select class="form-input"><option>10 — Материалы</option><option>41 — Товары</option><option>26 — Общехоз. расходы</option></select></div>
-    <div style="margin-top:12px;display:flex;gap:8px"><button class="btn bp">✓ Провести в 1С</button><button class="btn bs">💬 Спросить AI</button><button class="btn bs">Найти дубль</button></div>
-  </div>
-</div>
-</div>
-</div>
-
-<!-- SCREEN 5: INCOMING DOCS -->
-<div class="page" id="p5">
-<div class="page-hdr"><div><div class="page-title">📥 Входящие документы</div><div class="page-sub">УПД, счета-фактуры, акты, ТОРГ-12</div></div>
-<div class="btn-row"><button class="btn bp btn-sm">📎 Загрузить</button><button class="btn bs btn-sm">🤖 Авто-OCR</button></div></div>
-<div style="border:2px dashed var(--border);border-radius:var(--r);padding:24px;text-align:center;color:var(--text2);font-size:13px;margin-bottom:16px;background:var(--surface);cursor:pointer">
-  📂 Перетащите PDF, JPG, PNG сюда или <span style="color:var(--accent);font-weight:600;cursor:pointer">выберите файл</span><br><span style="font-size:11px;margin-top:4px;display:block">Поддерживаются: УПД, ТОРГ-12, Акт, Счёт-фактура, Чек</span>
-</div>
-<div class="frow"><button class="fbtn act">Все (12)</button><button class="fbtn">УПД (5)</button><button class="fbtn">Счёт-ф. (3)</button><button class="fbtn">Акты (2)</button><button class="fbtn">Чеки (2)</button></div>
-<div class="tw"><table>
-<tr><th>Дата</th><th>Тип</th><th>Контрагент</th><th>Сумма с НДС</th><th>OCR</th><th>Статус</th><th>Действия</th></tr>
-<tr><td>13.05</td><td>УПД</td><td>ООО Поставщик</td><td>180 000 ₽</td><td><span class="badge bok">94%</span></td><td><span class="badge binfo">Распознан</span></td><td><button class="btn bs btn-sm" onclick="nav(4,this)">Проверить</button></td></tr>
-<tr><td>13.05</td><td>Счёт-ф.</td><td>ООО Альфа</td><td>90 000 ₽</td><td><span class="badge bwarn">71%</span></td><td><span class="badge bwarn">Низкое кач-во</span></td><td><button class="btn bs btn-sm">Исправить</button></td></tr>
-<tr><td>12.05</td><td>ТОРГ-12</td><td>ИП Кузнецов</td><td>45 000 ₽</td><td><span class="badge bok">96%</span></td><td><span class="badge berr">Ошибка НДС</span></td><td><button class="btn bd btn-sm">Исправить</button></td></tr>
-<tr><td>11.05</td><td>Акт</td><td>ООО Снаб</td><td>67 500 ₽</td><td><span class="badge bok">98%</span></td><td><span class="badge bok">Проведён</span></td><td><button class="btn bs btn-sm">Открыть</button></td></tr>
-</table></div>
-</div>
-
-<!-- SCREEN 6: OUTGOING / CREATE -->
-<div class="page" id="p6">
-<div class="page-hdr"><div><div class="page-title">📤 Создание счёта</div><div class="page-sub">Исходящий счёт на оплату</div></div>
-<div class="btn-row"><button class="btn bs btn-sm">Черновик</button><button class="btn bs btn-sm">PDF</button><button class="btn bp btn-sm" onclick="showModal()">Создать в 1С</button></div></div>
-<div class="sg sg2">
-<div class="card">
-  <div class="card-hdr"><h3>👤 Покупатель</h3></div>
-  <div class="form-group"><label class="form-label">Покупатель</label><input class="form-input" value="ООО Ромашка"></div>
-  <div class="sg sg2" style="margin-bottom:0"><div class="form-group"><label class="form-label">ИНН</label><input class="form-input" value="7712345678"></div><div class="form-group"><label class="form-label">КПП</label><input class="form-input" value="771201001"></div></div>
-  <div class="form-group"><label class="form-label">Договор</label><select class="form-input"><option>Договор №12 от 01.03.2026</option><option>Договор №8 от 15.01.2026</option></select></div>
-</div>
-<div class="card">
-  <div class="card-hdr"><h3>📋 Товары и услуги</h3></div>
-  <table><tr><th>Наименование</th><th>Кол-во</th><th>Цена</th><th>НДС</th><th>Сумма</th></tr>
-  <tr><td><input class="sinp" value="Консультационные услуги" style="width:100%;border:none;outline:none;font-size:13px"></td><td><input class="sinp" value="1" style="width:50px"></td><td><input class="sinp" value="208 333" style="width:90px"></td><td><select class="sinp" style="width:70px"><option>20%</option><option>10%</option><option>0%</option></select></td><td style="font-weight:700">250 000 ₽</td></tr>
-  </table>
-  <div style="margin-top:12px;text-align:right;font-size:13px"><div style="color:var(--text2)">Без НДС: <b>208 333 ₽</b></div><div style="color:var(--text2)">НДС 20%: <b>41 667 ₽</b></div><div style="font-size:16px;font-weight:800;color:var(--accent);margin-top:4px">Итого: 250 000 ₽</div></div>
-  <div style="margin-top:12px"><div class="form-group"><label class="form-label">Срок оплаты</label><input class="form-input" type="date" value="2026-05-28"></div><div class="form-group"><label class="form-label">Комментарий</label><input class="form-input" placeholder="Необязательно"></div></div>
-</div>
-</div>
-<div style="background:var(--accent-lt);border:1px solid #BFDBFE;border-radius:var(--r);padding:12px 16px;font-size:13px;color:var(--text)">
-  🤖 <b>AI-подсказка:</b> Контрагент найден. Договор актуален. Реквизиты корректны. НДС рассчитан правильно. Дубль не обнаружен.
-</div>
-</div>
-
-<!-- SCREEN 7: PAYMENTS -->
-<div class="page" id="p7">
-<div class="page-hdr"><div><div class="page-title">💳 Платежи</div><div class="page-sub">Платёжные поручения · Отправляются директору на подпись</div></div>
-<div class="btn-row"><button class="btn bp btn-sm" onclick="showModal()">+ Создать платёжку</button><button class="btn bs btn-sm">Найти дубли</button></div></div>
-<div class="sg sg4">
-  <div class="sc"><div class="lbl">Черновики</div><div class="val">3</div><div class="sub">Готовы к отправке</div></div>
-  <div class="sc"><div class="lbl">На подписи</div><div class="val" style="color:var(--warn)">2</div><div class="sub">У директора</div></div>
-  <div class="sc"><div class="lbl">Оплачено (май)</div><div class="val" style="color:var(--ok)">8</div><div class="sub">1 775 000 ₽</div></div>
-  <div class="sc"><div class="lbl">Дубли</div><div class="val" style="color:var(--err)">1</div><div class="sub">Требует проверки</div></div>
-</div>
-<div class="frow"><button class="fbtn act">Все</button><button class="fbtn">Черновики (3)</button><button class="fbtn">На подписи (2)</button><button class="fbtn">Оплачено (8)</button><button class="fbtn">⚠️ Дубли (1)</button></div>
-<div class="tw"><table>
-<tr><th>Дата</th><th>Получатель</th><th>ИНН</th><th>Назначение</th><th>Сумма</th><th>Статус</th><th>Автор</th><th>Действия</th></tr>
-<tr><td>13.05</td><td class="tdl">ФНС России</td><td>7707329152</td><td>НДС за 1 кв. 2026</td><td style="font-weight:700">890 000 ₽</td><td><span class="badge bwarn">На подписи</span></td><td>AI-агент</td><td><button class="btn bs btn-sm">Открыть</button></td></tr>
-<tr><td>13.05</td><td class="tdl">ИП Кузнецов</td><td>500123456</td><td>Оплата по договору №5</td><td style="font-weight:700">45 000 ₽</td><td><span class="badge berr">Дубль!</span></td><td>Иванова</td><td><button class="btn bd btn-sm">Проверить</button></td></tr>
-<tr><td>12.05</td><td class="tdl">ООО Поставщик</td><td>7709876543</td><td>Оплата УПД №145</td><td style="font-weight:700">180 000 ₽</td><td><span class="badge bgray">Черновик</span></td><td>AI-агент</td><td><div class="btn-row"><button class="btn bp btn-sm" onclick="showModal()">На подпись</button><button class="btn bs btn-sm">Изменить</button></div></td></tr>
-<tr><td>10.05</td><td class="tdl">ФНС России</td><td>7707329152</td><td>НДС за 1 кв. 2026</td><td style="font-weight:700">890 000 ₽</td><td><span class="badge bok">Оплачено</span></td><td>AI-агент</td><td><button class="btn bs btn-sm">Открыть</button></td></tr>
-<tr><td>08.05</td><td class="tdl">Зарплата</td><td>—</td><td>Выплата з/п май 2026</td><td style="font-weight:700">250 000 ₽</td><td><span class="badge bok">Оплачено</span></td><td>Иванова</td><td><button class="btn bs btn-sm">Открыть</button></td></tr>
-</table></div>
-<div class="card" style="background:var(--err-lt);border-color:#FECACA">
-  <div class="card-hdr"><h3 style="color:var(--err)">⚠️ Обнаружен дубль платежа</h3></div>
-  <div style="font-size:13px">ИП Кузнецов — 45 000 ₽ — платёжки от 07.05 и 13.05 совпадают по сумме и получателю. Рекомендую отменить одну из них.<br><br>
-  <div class="btn-row"><button class="btn bd btn-sm">Отменить дубль</button><button class="btn bs btn-sm">Оставить оба</button><button class="btn bs btn-sm">Спросить AI</button></div></div>
-</div>
-</div>
-
-<!-- SCREEN 8: VAT -->
-<div class="page" id="p8">
-<div class="page-hdr"><div><div class="page-title">🧾 НДС</div><div class="page-sub">Книга покупок, продаж, декларация · Q1 2026</div></div>
-<div class="btn-row"><button class="btn bp btn-sm">🤖 Проверить НДС</button><button class="btn bs btn-sm">Сформировать декларацию</button></div></div>
-<div class="sg sg4">
-  <div class="sc"><div class="lbl">НДС к уплате</div><div class="val" style="color:var(--err)">890 000 ₽</div><div class="sub dn">Срок: 20 мая — просрочен!</div></div>
-  <div class="sc"><div class="lbl">НДС к вычету</div><div class="val" style="color:var(--ok)">234 000 ₽</div><div class="sub">Книга покупок</div></div>
-  <div class="sc"><div class="lbl">Расхождения</div><div class="val" style="color:var(--err)">3</div><div class="sub dn">Нужно исправить</div></div>
-  <div class="sc"><div class="lbl">Без счёт-фактуры</div><div class="val" style="color:var(--warn)">5</div><div class="sub">Документов</div></div>
-</div>
-<div class="sg sg2">
-<div>
-  <div class="card">
-    <div class="card-hdr"><h3>📗 Книга покупок (Q1 2026)</h3><button class="btn bs btn-sm">Открыть полностью</button></div>
-    <table><tr><th>Дата</th><th>Контрагент</th><th>Счёт-ф.</th><th>Сумма</th><th>НДС</th><th>Статус</th></tr>
-    <tr><td>10.03</td><td>ООО Поставщик</td><td>№78</td><td>150 000 ₽</td><td>25 000 ₽</td><td><span class="badge bok">OK</span></td></tr>
-    <tr><td>15.03</td><td>ИП Кузнецов</td><td>—</td><td>45 000 ₽</td><td>—</td><td><span class="badge berr">Нет СФ</span></td></tr>
-    <tr><td>20.03</td><td>ООО Снаб</td><td>№92</td><td>410 000 ₽</td><td>68 333 ₽</td><td><span class="badge bwarn">Проверить</span></td></tr>
-    <tr><td>28.03</td><td>ООО Альфа</td><td>№104</td><td>230 000 ₽</td><td>38 333 ₽</td><td><span class="badge bok">OK</span></td></tr>
-    </table>
-  </div>
-  <div class="card">
-    <div class="card-hdr"><h3>🏛️ Требования ФНС</h3></div>
-    <div class="notif-item"><div class="nic err">📋</div><div class="nb"><div class="nt">Требование №А77-12345</div><div class="ns">Пояснения к расхождениям НДС · Срок: 25.05</div></div><button class="btn bp btn-sm" onclick="showModal()">Ответить</button></div>
-  </div>
-</div>
-<div>
-  <div class="card">
-    <div class="card-hdr"><h3>📘 Книга продаж (Q1 2026)</h3><button class="btn bs btn-sm">Открыть полностью</button></div>
-    <table><tr><th>Дата</th><th>Покупатель</th><th>Счёт-ф.</th><th>Сумма</th><th>НДС</th><th>Статус</th></tr>
-    <tr><td>05.03</td><td>ООО Ромашка</td><td>№47</td><td>90 000 ₽</td><td>15 000 ₽</td><td><span class="badge bok">OK</span></td></tr>
-    <tr><td>18.03</td><td>АО МегаСтрой</td><td>№51</td><td>230 000 ₽</td><td>38 333 ₽</td><td><span class="badge bok">OK</span></td></tr>
-    <tr><td>25.03</td><td>ООО Бета</td><td>№55</td><td>67 500 ₽</td><td>11 250 ₽</td><td><span class="badge bwarn">Дубль?</span></td></tr>
-    </table>
-  </div>
-  <div class="card">
-    <div class="card-hdr"><h3>📋 Декларация НДС Q1 2026</h3></div>
-    <div style="padding:10px;background:var(--warn-lt);border:1px solid #FDE68A;border-radius:var(--r);margin-bottom:10px;font-size:13px">
-      <b>Статус: Ожидает подписи директора</b><br><span style="color:var(--text2)">Подготовлена AI-агентом 12.05.2026</span>
-    </div>
-    <div style="font-size:13px"><div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)"><span>НДС начислен (Раздел 3)</span><span style="font-weight:700">890 000 ₽</span></div>
-    <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)"><span>НДС к вычету (строка 120)</span><span style="font-weight:700;color:var(--ok)">234 000 ₽</span></div>
-    <div style="display:flex;justify-content:space-between;padding:7px 0"><span style="font-weight:700">К уплате</span><span style="font-weight:800;color:var(--err);font-size:16px">656 000 ₽</span></div></div>
-    <div class="btn-row" style="margin-top:12px"><button class="btn bp" onclick="showModal()">Подписать и отправить</button><button class="btn bs">Найти расхождения</button></div>
-  </div>
-</div>
-</div>
-</div>
-
-<!-- SCREEN 9: REPORTS -->
-<div class="page" id="p9">
-<div class="page-hdr"><div><div class="page-title">📊 Отчётность</div><div class="page-sub">Налоговая, бухгалтерская, зарплатная</div></div>
-<div class="btn-row"><button class="btn bp btn-sm">🤖 Подготовить всё</button></div></div>
-<div class="frow"><button class="fbtn act">Все</button><button class="fbtn">Налоговая</button><button class="fbtn">Бухгалтерская</button><button class="fbtn">Зарплатная</button><button class="fbtn">Требования ФНС</button></div>
-<div class="tw"><table>
-<tr><th>Отчёт</th><th>Период</th><th>Срок сдачи</th><th>Статус</th><th>Ошибки</th><th>Ответственный</th><th>Действия</th></tr>
-<tr><td style="font-weight:600">📋 Декларация НДС</td><td>Q1 2026</td><td style="color:var(--err);font-weight:700">20 мая</td><td><span class="badge bwarn">Ожидает подписи</span></td><td><span class="badge berr">3</span></td><td>Иванова А.С.</td><td><div class="btn-row"><button class="btn bp btn-sm" onclick="showModal()">Подписать</button><button class="btn bs btn-sm">Проверить</button></div></td></tr>
-<tr><td style="font-weight:600">👥 6-НДФЛ</td><td>Q1 2026</td><td>30 апр</td><td><span class="badge bok">Сдан</span></td><td>—</td><td>Иванова А.С.</td><td><button class="btn bs btn-sm">Скачать</button></td></tr>
-<tr><td style="font-weight:600">🏛️ РСВ</td><td>Q1 2026</td><td>30 апр</td><td><span class="badge bok">Сдан</span></td><td>—</td><td>Иванова А.С.</td><td><button class="btn bs btn-sm">Скачать</button></td></tr>
-<tr><td style="font-weight:600">📊 Баланс</td><td>2025 год</td><td>31 марта</td><td><span class="badge bok">Сдан</span></td><td>—</td><td>Иванова А.С.</td><td><button class="btn bs btn-sm">Скачать</button></td></tr>
-<tr><td style="font-weight:600">📗 Книга покупок</td><td>Q1 2026</td><td>Авто</td><td><span class="badge bwarn">Ошибки</span></td><td><span class="badge berr">3</span></td><td>AI-агент</td><td><button class="btn bd btn-sm" onclick="nav(8,this)">Исправить</button></td></tr>
-<tr><td style="font-weight:600">💼 Налог на прибыль</td><td>Q1 2026</td><td style="color:var(--err)">28 апр</td><td><span class="badge berr">Просрочен</span></td><td><span class="badge berr">!</span></td><td>—</td><td><button class="btn bd btn-sm" onclick="showModal()">Подготовить</button></td></tr>
-</table></div>
-</div>
-
-<!-- SCREEN 10: MONTH CLOSE -->
-<div class="page" id="p10">
-<div class="page-hdr"><div><div class="page-title">🔒 Закрытие месяца</div><div class="page-sub">Апрель 2026 · Регламентные операции</div></div>
-<div class="btn-row"><button class="btn bs btn-sm">Проверить готовность</button><button class="btn bp btn-sm" onclick="showModal()">▶ Запустить закрытие</button></div></div>
-<div class="sg sg4">
-  <div class="sc"><div class="lbl">Выполнено</div><div class="val" style="color:var(--ok)">2 / 7</div><div class="sub">операций</div></div>
-  <div class="sc"><div class="lbl">Ошибки</div><div class="val" style="color:var(--err)">2</div><div class="sub dn">Блокируют закрытие</div></div>
-  <div class="sc"><div class="lbl">Незакрытые счета</div><div class="val" style="color:var(--warn)">3</div><div class="sub">26, 44, 60</div></div>
-  <div class="sc"><div class="lbl">Остаток на закрытие</div><div class="val">410 000 ₽</div><div class="sub">Себестоимость</div></div>
-</div>
-<div class="sg sg2">
-<div>
-  <div class="card">
-    <div class="card-hdr"><h3>📋 Операции закрытия</h3></div>
-    <div class="step-list">
-      <div class="step"><div class="snum done">✓</div><div class="step-body"><div class="t">Разноска выписок и документов</div><div class="s">Выполнено · 47 документов проведено</div></div><span class="badge bok">Готово</span></div>
-      <div class="step"><div class="snum done">✓</div><div class="step-body"><div class="t">Начисление зарплаты</div><div class="s">250 000 ₽ · Налоги рассчитаны</div></div><span class="badge bok">Готово</span></div>
-      <div class="step"><div class="snum err">!</div><div class="step-body"><div class="t">Проверка книги покупок</div><div class="s">3 ошибки НДС — нужно исправить</div></div><span class="badge berr">Ошибка</span></div>
-      <div class="step"><div class="snum wait">4</div><div class="step-body"><div class="t">Начисление амортизации ОС и НМА</div><div class="s">Ожидает исправления ошибок</div></div><span class="badge bgray">Ожидает</span></div>
-      <div class="step"><div class="snum wait">5</div><div class="step-body"><div class="t">Закрытие счёта 26 (общехоз.)</div><div class="s">Ожидает · Остаток: 82 000 ₽</div></div><span class="badge bgray">Ожидает</span></div>
-      <div class="step"><div class="snum wait">6</div><div class="step-body"><div class="t">Закрытие счёта 44 (расходы на продажу)</div><div class="s">Ожидает · Остаток: 45 000 ₽</div></div><span class="badge bgray">Ожидает</span></div>
-      <div class="step"><div class="snum wait">7</div><div class="step-body"><div class="t">Расчёт себестоимости и налога на прибыль</div><div class="s">Ожидает</div></div><span class="badge bgray">Ожидает</span></div>
-    </div>
-  </div>
-</div>
-<div>
-  <div class="card" style="background:var(--err-lt);border-color:#FECACA">
-    <div class="card-hdr"><h3 style="color:var(--err)">⛔ Блокирующие ошибки</h3></div>
-    <div style="font-size:13px;display:flex;flex-direction:column;gap:10px">
-      <div style="padding:10px;background:#fff;border-radius:var(--r);border:1px solid #FECACA"><div style="font-weight:700;margin-bottom:4px">Ошибка НДС в книге покупок</div><div style="color:var(--text2)">ИП Кузнецов №38 — отсутствует счёт-фактура. Без исправления нельзя закрыть счёт 19.</div><button class="btn bd btn-sm" style="margin-top:8px" onclick="nav(8,this)">Исправить →</button></div>
-      <div style="padding:10px;background:#fff;border-radius:var(--r);border:1px solid #FECACA"><div style="font-weight:700;margin-bottom:4px">Незакрытый договор</div><div style="color:var(--text2)">ООО Снаб — предоплата 410 000 ₽ без закрывающего документа.</div><button class="btn bd btn-sm" style="margin-top:8px">Запросить документ →</button></div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-hdr"><h3>🤖 Рекомендации AI</h3></div>
-    <div style="font-size:13px;background:var(--accent-lt);border:1px solid #BFDBFE;border-radius:var(--r);padding:12px">
-      Перед запуском закрытия исправьте 3 ошибки НДС и запросите закрывающий документ у ООО Снаб. Амортизация ОС составит ≈ 28 500 ₽. После закрытия 26 счёта 82 000 ₽ распределятся на себестоимость.
-    </div>
-    <div class="btn-row" style="margin-top:12px"><button class="btn bs">📊 Сформировать отчёт</button><button class="btn bs">↩ Откатить операцию</button></div>
-  </div>
-</div>
-</div>
-</div>
-
-<!-- SCREEN 11: RECEIVABLES -->
-<div class="page" id="p11">
-<div class="page-hdr"><div><div class="page-title">📈 Дебиторская задолженность</div><div class="page-sub">Покупатели нам должны</div></div>
-<div class="btn-row"><button class="btn bs btn-sm">Создать акт сверки</button><button class="btn bp btn-sm" onclick="showModal()">Напомнить всем</button></div></div>
-<div class="sg sg4">
-  <div class="sc"><div class="lbl">Всего дебиторка</div><div class="val">260 000 ₽</div><div class="sub">5 контрагентов</div></div>
-  <div class="sc"><div class="lbl">Просрочено</div><div class="val" style="color:var(--err)">30 000 ₽</div><div class="sub dn">21+ дней</div></div>
-  <div class="sc"><div class="lbl">До 30 дней</div><div class="val" style="color:var(--warn)">80 000 ₽</div><div class="sub">5 дней просрочки</div></div>
-  <div class="sc"><div class="lbl">Вовремя</div><div class="val" style="color:var(--ok)">150 000 ₽</div><div class="sub">В сроке</div></div>
-</div>
-<div class="tw"><table>
-<tr><th>Контрагент</th><th>Сумма</th><th>Дата долга</th><th>Дней просрочки</th><th>Последний контакт</th><th>Риск</th><th>Ответственный</th><th>Действия</th></tr>
-<tr><td class="tdl">ООО Альфа</td><td style="font-weight:700">150 000 ₽</td><td>01.05.26</td><td><span class="badge bok">Вовремя</span></td><td>10.05.26</td><td><span class="rbl">Низкий</span></td><td>Иванова</td><td><button class="btn bs btn-sm">Акт сверки</button></td></tr>
-<tr><td class="tdl">ИП Петров А.В.</td><td style="font-weight:700">80 000 ₽</td><td>08.05.26</td><td><span class="badge bwarn">5 дней</span></td><td>09.05.26</td><td><span class="rbm">Средний</span></td><td>Иванова</td><td><div class="btn-row"><button class="btn bp btn-sm" onclick="showModal()">Напомнить</button><button class="btn bs btn-sm">Акт</button></div></td></tr>
-<tr><td class="tdl">ООО Бета</td><td style="font-weight:700">30 000 ₽</td><td>22.04.26</td><td><span class="badge berr">21 день</span></td><td>05.05.26</td><td><span class="rbh">Высокий</span></td><td>Иванова</td><td><div class="btn-row"><button class="btn bd btn-sm" onclick="showModal()">Блокировать</button><button class="btn bs btn-sm">Письмо</button></div></td></tr>
-</table></div>
-<div class="card" style="background:var(--ok-lt);border-color:#BBF7D0">
-  <div class="card-hdr"><h3 style="color:var(--ok)">📧 Напоминание о задолженности</h3></div>
-  <div style="font-size:13px">AI подготовил письмо для ИП Петров А.В. (80 000 ₽, 5 дней просрочки). Текст: "Уважаемый Алексей Владимирович, напоминаем об оплате по счёту №47 на сумму 80 000 ₽. Срок оплаты истёк 08.05.2026."
-  <div class="btn-row" style="margin-top:10px"><button class="btn bsuc btn-sm" onclick="showModal()">✓ Отправить письмо</button><button class="btn bs btn-sm">Редактировать</button></div></div>
-</div>
-</div>
-
-<!-- SCREEN 12: PAYABLES -->
-<div class="page" id="p12">
-<div class="page-hdr"><div><div class="page-title">📉 Кредиторская задолженность</div><div class="page-sub">Мы должны контрагентам</div></div>
-<div class="btn-row"><button class="btn bp btn-sm" onclick="nav(7,this)">Создать платёжку</button></div></div>
-<div class="sg sg4">
-  <div class="sc"><div class="lbl">Всего кредиторка</div><div class="val">225 000 ₽</div><div class="sub">3 контрагента</div></div>
-  <div class="sc"><div class="lbl">Сегодня</div><div class="val" style="color:var(--err)">45 000 ₽</div><div class="sub dn">ИП Кузнецов</div></div>
-  <div class="sc"><div class="lbl">На этой неделе</div><div class="val" style="color:var(--warn)">120 000 ₽</div><div class="sub">3 дня</div></div>
-  <div class="sc"><div class="lbl">Без риска</div><div class="val" style="color:var(--ok)">60 000 ₽</div><div class="sub">7 дней</div></div>
-</div>
-<div class="tw"><table>
-<tr><th>Контрагент</th><th>Сумма</th><th>Дата оплаты</th><th>Основание</th><th>Риск просрочки</th><th>Статус</th><th>Действия</th></tr>
-<tr><td class="tdl">ИП Кузнецов</td><td style="font-weight:700;color:var(--err)">45 000 ₽</td><td style="color:var(--err);font-weight:700">Сегодня!</td><td>Договор №5</td><td><span class="rbh">Просрочка</span></td><td><span class="badge berr">Срочно</span></td><td><div class="btn-row"><button class="btn bp btn-sm" onclick="showModal()">Создать платёжку</button></div></td></tr>
-<tr><td class="tdl">ООО Поставщик</td><td style="font-weight:700">120 000 ₽</td><td style="color:var(--warn)">16.05.26</td><td>УПД №145</td><td><span class="rbm">Средний</span></td><td><span class="badge bwarn">3 дня</span></td><td><div class="btn-row"><button class="btn bp btn-sm" onclick="showModal()">Платёжка</button><button class="btn bs btn-sm">Отложить</button></div></td></tr>
-<tr><td class="tdl">Аренда офиса</td><td style="font-weight:700">60 000 ₽</td><td>20.05.26</td><td>Дог. аренды</td><td><span class="rbl">Низкий</span></td><td><span class="badge bok">7 дней</span></td><td><button class="btn bs btn-sm">Создать платёжку</button></td></tr>
-</table></div>
-</div>
-
-<!-- SCREEN 13: TASKS -->
-<div class="page" id="p13">
-<div class="page-hdr"><div><div class="page-title">✅ Задачи</div><div class="page-sub">Управление задачами между ролями</div></div>
-<div class="btn-row"><button class="btn bp btn-sm" onclick="showModal()">+ Создать задачу</button></div></div>
-<div class="frow"><button class="fbtn act">Все (8)</button><button class="fbtn">Новые (2)</button><button class="fbtn">В работе (3)</button><button class="fbtn">Просрочены (2)</button><button class="fbtn">Выполнены (1)</button></div>
-<div class="tw"><table>
-<tr><th>Задача</th><th>Автор</th><th>Исполнитель</th><th>Срок</th><th>Приоритет</th><th>Статус</th><th>Документ</th><th>Действия</th></tr>
-<tr><td class="tdl">Разнести банковскую выписку 13.05</td><td>Директор</td><td>Иванова А.С.</td><td style="color:var(--err)">Сегодня</td><td><span class="badge berr">Высокий</span></td><td><span class="badge binfo">В работе</span></td><td class="tdl">Выписка Сбербанк</td><td><button class="btn bs btn-sm">Открыть</button></td></tr>
-<tr><td class="tdl">Подготовить декларацию НДС Q1</td><td>AI-агент</td><td>Иванова А.С.</td><td style="color:var(--err)">20 мая</td><td><span class="badge berr">Высокий</span></td><td><span class="badge bwarn">На проверке</span></td><td class="tdl">Декларация НДС</td><td><button class="btn bp btn-sm" onclick="nav(8,this)">Перейти</button></td></tr>
-<tr><td class="tdl">Сверить дебиторку ООО Бета</td><td>Директор</td><td>Иванова А.С.</td><td style="color:var(--err)">15 мая</td><td><span class="badge bwarn">Средний</span></td><td><span class="badge berr">Просрочена</span></td><td class="tdl">ООО Бета</td><td><button class="btn bs btn-sm">Открыть</button></td></tr>
-<tr><td class="tdl">Проверить контрагента ООО Снаб</td><td>AI-агент</td><td>Иванова А.С.</td><td>18 мая</td><td><span class="badge bwarn">Средний</span></td><td><span class="badge binfo">Новая</span></td><td>—</td><td><button class="btn bs btn-sm">Принять</button></td></tr>
-<tr><td class="tdl">Акт с ООО Ромашка — подписан</td><td>Директор</td><td>Иванова А.С.</td><td>12 мая</td><td><span class="badge bgray">Низкий</span></td><td><span class="badge bok">✓ Выполнена</span></td><td class="tdl">Акт №22</td><td><button class="btn bs btn-sm">Открыть</button></td></tr>
-</table></div>
-</div>
-
-<!-- SCREEN 14: CONTRACTORS -->
-<div class="page" id="p14">
-<div class="page-hdr"><div><div class="page-title">👥 Контрагенты</div><div class="page-sub">Клиенты, поставщики, реквизиты, задолженность</div></div>
-<div class="btn-row"><button class="btn bp btn-sm" onclick="showModal()">+ Добавить</button></div></div>
-<div class="frow"><input class="sinp" type="text" placeholder="🔍 Поиск по названию или ИНН..." style="flex:1;min-width:200px"><button class="fbtn act">Все</button><button class="fbtn">Клиенты</button><button class="fbtn">Поставщики</button><button class="fbtn">Должники</button></div>
-<div class="tw"><table>
-<tr><th>Наименование</th><th>ИНН</th><th>Тип</th><th>Баланс</th><th>Документов</th><th>Риск</th><th>Статус</th><th>Действия</th></tr>
-<tr><td class="tdl">ООО Альфа</td><td>7701234567</td><td>Клиент</td><td style="color:var(--ok);font-weight:700">+150 000 ₽</td><td>12</td><td><span class="rbl">Низкий</span></td><td><span class="badge bok">Активен</span></td><td><div class="btn-row"><button class="btn bs btn-sm">Карточка</button><button class="btn bs btn-sm">Счёт</button></div></td></tr>
-<tr><td class="tdl">ООО Бета</td><td>7709876543</td><td>Поставщик</td><td style="color:var(--err);font-weight:700">−67 500 ₽</td><td>8</td><td><span class="rbh">Высокий</span></td><td><span class="badge berr">Просрочен</span></td><td><div class="btn-row"><button class="btn bs btn-sm">Карточка</button><button class="btn bd btn-sm" onclick="showModal()">Блокировать</button></div></td></tr>
-<tr><td class="tdl">ИП Петров А.В.</td><td>500123456</td><td>Клиент</td><td style="color:var(--ok);font-weight:700">+80 000 ₽</td><td>5</td><td><span class="rbm">Средний</span></td><td><span class="badge bwarn">Внимание</span></td><td><div class="btn-row"><button class="btn bs btn-sm">Карточка</button><button class="btn bs btn-sm">Напомнить</button></div></td></tr>
-<tr><td class="tdl">ООО Ромашка</td><td>7712345678</td><td>Клиент</td><td style="color:var(--ok);font-weight:700">+115 000 ₽</td><td>18</td><td><span class="rbl">Низкий</span></td><td><span class="badge bok">Активен</span></td><td><div class="btn-row"><button class="btn bs btn-sm">Карточка</button><button class="btn bs btn-sm">Счёт</button></div></td></tr>
-<tr><td class="tdl">ООО Снаб</td><td>7798765432</td><td>Поставщик</td><td style="color:var(--err);font-weight:700">−410 000 ₽</td><td>3</td><td><span class="rbm">Средний</span></td><td><span class="badge bwarn">Проверить</span></td><td><div class="btn-row"><button class="btn bs btn-sm">Карточка</button><button class="btn bs btn-sm">Проверить ИНН</button></div></td></tr>
-</table></div>
-</div>
-
-<!-- SCREEN 15: NOTIFICATIONS -->
-<div class="screen" id="screen-15">
-  <div class="topbar">
-    <button class="topbar-menu" onclick="toggleNav()">☰</button>
-    <span class="topbar-title">Уведомления</span>
-    <div class="topbar-actions">
-      <button class="btn btn-ghost btn-sm" onclick="markAllRead()">Прочитать все</button>
-    </div>
-  </div>
-  <div class="page-content">
-    <div class="filter-bar">
-      <div class="filter-tabs">
-        <button class="filter-tab active" onclick="filterNotifs(this,'all')">Все <span class="badge badge-accent">12</span></button>
-        <button class="filter-tab" onclick="filterNotifs(this,'error')">Ошибки <span class="badge badge-err">3</span></button>
-        <button class="filter-tab" onclick="filterNotifs(this,'warn')">Предупреждения <span class="badge badge-warn">5</span></button>
-        <button class="filter-tab" onclick="filterNotifs(this,'info')">Инфо <span class="badge badge-ok">4</span></button>
-      </div>
-    </div>
-    <div class="notif-list" id="notif-list">
-      <div class="notif-item unread notif-error" data-type="error">
-        <div class="notif-icon">🚨</div>
-        <div class="notif-body">
-          <div class="notif-title">Ошибка декларации НДС</div>
-          <div class="notif-text">Счёт-фактура №СФ-2025-0891 содержит некорректный ИНН контрагента. Требуется исправление до 25.07.</div>
-          <div class="notif-meta"><span class="notif-time">2 мин назад</span><span class="badge badge-err">Критично</span></div>
-        </div>
-        <button class="notif-close" onclick="dismissNotif(this)">×</button>
-      </div>
-      <div class="notif-item unread notif-error" data-type="error">
-        <div class="notif-icon">🚨</div>
-        <div class="notif-body">
-          <div class="notif-title">Дубль платежа</div>
-          <div class="notif-text">Обнаружен возможный дублирующий платёж ООО "Стройматериалы" на 245 000 ₽. Проверьте платёжное поручение №1847.</div>
-          <div class="notif-meta"><span class="notif-time">15 мин назад</span><span class="badge badge-err">Критично</span></div>
-        </div>
-        <button class="notif-close" onclick="dismissNotif(this)">×</button>
-      </div>
-      <div class="notif-item unread notif-error" data-type="error">
-        <div class="notif-icon">⚠️</div>
-        <div class="notif-body">
-          <div class="notif-title">Требование ФНС</div>
-          <div class="notif-text">Получено требование №ТР-2025-4821 о предоставлении пояснений по НДС за 2 квартал. Срок ответа: 5 рабочих дней.</div>
-          <div class="notif-meta"><span class="notif-time">1 час назад</span><span class="badge badge-err">Срочно</span></div>
-        </div>
-        <button class="notif-close" onclick="dismissNotif(this)">×</button>
-      </div>
-      <div class="notif-item unread notif-warn" data-type="warn">
-        <div class="notif-icon">⏰</div>
-        <div class="notif-body">
-          <div class="notif-title">Срок уплаты НДС</div>
-          <div class="notif-text">До уплаты НДС за 2 квартал осталось 3 дня. Сумма: 1 284 000 ₽.</div>
-          <div class="notif-meta"><span class="notif-time">3 часа назад</span><span class="badge badge-warn">Предупреждение</span></div>
-        </div>
-        <button class="notif-close" onclick="dismissNotif(this)">×</button>
-      </div>
-      <div class="notif-item unread notif-warn" data-type="warn">
-        <div class="notif-icon">📄</div>
-        <div class="notif-body">
-          <div class="notif-title">Документы без проводок</div>
-          <div class="notif-text">12 входящих документов за июль не имеют бухгалтерских проводок. Необходимо обработать до закрытия месяца.</div>
-          <div class="notif-meta"><span class="notif-time">5 часов назад</span><span class="badge badge-warn">Предупреждение</span></div>
-        </div>
-        <button class="notif-close" onclick="dismissNotif(this)">×</button>
-      </div>
-      <div class="notif-item notif-warn" data-type="warn">
-        <div class="notif-icon">💰</div>
-        <div class="notif-body">
-          <div class="notif-title">Просроченная дебиторка</div>
-          <div class="notif-text">ООО "Техника+" (долг 890 000 ₽) просрочил оплату на 45 дней. Рекомендуется направить претензию.</div>
-          <div class="notif-meta"><span class="notif-time">Вчера, 16:30</span><span class="badge badge-warn">Предупреждение</span></div>
-        </div>
-        <button class="notif-close" onclick="dismissNotif(this)">×</button>
-      </div>
-      <div class="notif-item notif-warn" data-type="warn">
-        <div class="notif-icon">🤖</div>
-        <div class="notif-body">
-          <div class="notif-title">ИИ обнаружил риски</div>
-          <div class="notif-text">При анализе контрагента ИП Смирнов обнаружены признаки однодневки: регистрация менее 6 месяцев, минимальный уставной капитал.</div>
-          <div class="notif-meta"><span class="notif-time">Вчера, 14:15</span><span class="badge badge-warn">ИИ-анализ</span></div>
-        </div>
-        <button class="notif-close" onclick="dismissNotif(this)">×</button>
-      </div>
-      <div class="notif-item notif-info" data-type="info">
-        <div class="notif-icon">✅</div>
-        <div class="notif-body">
-          <div class="notif-title">Платёж проведён</div>
-          <div class="notif-text">Платёжное поручение №1846 на сумму 125 000 ₽ (ООО "Логистик") успешно проведено банком.</div>
-          <div class="notif-meta"><span class="notif-time">Вчера, 11:20</span><span class="badge badge-ok">Выполнено</span></div>
-        </div>
-        <button class="notif-close" onclick="dismissNotif(this)">×</button>
-      </div>
-      <div class="notif-item notif-info" data-type="info">
-        <div class="notif-icon">📊</div>
-        <div class="notif-body">
-          <div class="notif-title">Отчёт сформирован</div>
-          <div class="notif-text">Форма 6-НДФЛ за полугодие 2025 сформирована и готова к подписанию. Срок подачи: 28 июля.</div>
-          <div class="notif-meta"><span class="notif-time">2 дня назад</span><span class="badge badge-ok">Готово</span></div>
-        </div>
-        <button class="notif-close" onclick="dismissNotif(this)">×</button>
-      </div>
-      <div class="notif-item notif-info" data-type="info">
-        <div class="notif-icon">🔄</div>
-        <div class="notif-body">
-          <div class="notif-title">Синхронизация с 1С</div>
-          <div class="notif-text">Синхронизация данных с базой 1С выполнена успешно. Загружено 247 новых операций.</div>
-          <div class="notif-meta"><span class="notif-time">2 дня назад</span><span class="badge badge-ok">Система</span></div>
-        </div>
-        <button class="notif-close" onclick="dismissNotif(this)">×</button>
-      </div>
-      <div class="notif-item notif-info" data-type="info">
-        <div class="notif-icon">👤</div>
-        <div class="notif-body">
-          <div class="notif-title">Новый пользователь</div>
-          <div class="notif-text">Оператор Иванова Мария добавлена в систему. Назначена роль: Оператор документооборота.</div>
-          <div class="notif-meta"><span class="notif-time">3 дня назад</span><span class="badge badge-ok">Система</span></div>
-        </div>
-        <button class="notif-close" onclick="dismissNotif(this)">×</button>
-      </div>
-      <div class="notif-item notif-warn" data-type="warn">
-        <div class="notif-icon">📦</div>
-        <div class="notif-body">
-          <div class="notif-title">Документы на проверке</div>
-          <div class="notif-text">3 документа от оператора Ивановой ожидают проверки бухгалтера. Загружены 15 минут назад.</div>
-          <div class="notif-meta"><span class="notif-time">4 дня назад</span><span class="badge badge-warn">Ожидание</span></div>
-        </div>
-        <button class="notif-close" onclick="dismissNotif(this)">×</button>
-      </div>
-      <div class="notif-item notif-info" data-type="info">
-        <div class="notif-icon">📅</div>
-        <div class="notif-body">
-          <div class="notif-title">Напоминание: налоговый календарь</div>
-          <div class="notif-text">На следующей неделе: уплата страховых взносов (25 июля) и подача декларации УСН (25 июля).</div>
-          <div class="notif-meta"><span class="notif-time">5 дней назад</span><span class="badge badge-ok">Напоминание</span></div>
-        </div>
-        <button class="notif-close" onclick="dismissNotif(this)">×</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SCREEN 16: SETTINGS -->
-<div class="screen" id="screen-16">
-  <div class="topbar">
-    <button class="topbar-menu" onclick="toggleNav()">☰</button>
-    <span class="topbar-title">Настройки</span>
-  </div>
-  <div class="page-content">
-    <div class="settings-layout">
-      <div class="settings-sidebar">
-        <div class="settings-nav-item active" onclick="showSettingsTab(this,'tab-profile')">👤 Профиль</div>
-        <div class="settings-nav-item" onclick="showSettingsTab(this,'tab-company')">🏢 Компания</div>
-        <div class="settings-nav-item" onclick="showSettingsTab(this,'tab-1c')">🔗 Интеграция 1С</div>
-        <div class="settings-nav-item" onclick="showSettingsTab(this,'tab-ai')">🤖 ИИ-ассистент</div>
-        <div class="settings-nav-item" onclick="showSettingsTab(this,'tab-notif')">🔔 Уведомления</div>
-        <div class="settings-nav-item" onclick="showSettingsTab(this,'tab-users')">👥 Пользователи</div>
-        <div class="settings-nav-item" onclick="showSettingsTab(this,'tab-security')">🔒 Безопасность</div>
-      </div>
-      <div class="settings-content">
-        <!-- Profile Tab -->
-        <div class="settings-tab active" id="tab-profile">
-          <div class="settings-section-title">Профиль пользователя</div>
-          <div class="settings-avatar-row">
-            <div class="settings-avatar">ПК</div>
-            <div>
-              <div style="font-weight:600">Петрова Карина Алексеевна</div>
-              <div style="color:var(--text2);font-size:13px">Главный бухгалтер</div>
-              <button class="btn btn-ghost btn-sm" style="margin-top:8px">Изменить фото</button>
-            </div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Полное имя</div>
-            <div class="settings-row-value"><input class="settings-input" value="Петрова Карина Алексеевна"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Email</div>
-            <div class="settings-row-value"><input class="settings-input" value="k.petrova@techprom.ru"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Телефон</div>
-            <div class="settings-row-value"><input class="settings-input" value="+7 (495) 123-45-67"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Язык интерфейса</div>
-            <div class="settings-row-value">
-              <select class="settings-select">
-                <option selected>Русский</option>
-                <option>English</option>
-              </select>
-            </div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Тема оформления</div>
-            <div class="settings-row-value">
-              <select class="settings-select">
-                <option selected>Светлая</option>
-                <option>Тёмная</option>
-                <option>Системная</option>
-              </select>
-            </div>
-          </div>
-          <button class="btn btn-primary" style="margin-top:16px">Сохранить изменения</button>
-        </div>
-        <!-- Company Tab -->
-        <div class="settings-tab" id="tab-company">
-          <div class="settings-section-title">Реквизиты компании</div>
-          <div class="settings-row">
-            <div class="settings-row-label">Наименование</div>
-            <div class="settings-row-value"><input class="settings-input" value="ООО «ТехПром»"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">ИНН</div>
-            <div class="settings-row-value"><input class="settings-input" value="7701234567"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">КПП</div>
-            <div class="settings-row-value"><input class="settings-input" value="770101001"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">ОГРН</div>
-            <div class="settings-row-value"><input class="settings-input" value="1027700123456"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Юридический адрес</div>
-            <div class="settings-row-value"><input class="settings-input" value="125009, Москва, ул. Тверская, д. 15"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Система налогообложения</div>
-            <div class="settings-row-value">
-              <select class="settings-select"><option selected>ОСНО</option><option>УСН 6%</option><option>УСН 15%</option></select>
-            </div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Плательщик НДС</div>
-            <div class="settings-row-value"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-          </div>
-          <button class="btn btn-primary" style="margin-top:16px">Сохранить</button>
-        </div>
-        <!-- 1C Tab -->
-        <div class="settings-tab" id="tab-1c">
-          <div class="settings-section-title">Подключение к 1С</div>
-          <div class="status-banner ok" style="margin-bottom:16px">
-            <span>🟢</span> Подключено: 1С:Бухгалтерия 8.3 — сервер prod-1c.techprom.ru
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Адрес сервера</div>
-            <div class="settings-row-value"><input class="settings-input" value="http://prod-1c.techprom.ru:8080"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">База данных</div>
-            <div class="settings-row-value"><input class="settings-input" value="Accounting_2025"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Пользователь</div>
-            <div class="settings-row-value"><input class="settings-input" value="glavbuh_api"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Пароль</div>
-            <div class="settings-row-value"><input class="settings-input" type="password" value="••••••••"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Интервал синхронизации</div>
-            <div class="settings-row-value">
-              <select class="settings-select"><option>Каждые 5 минут</option><option selected>Каждые 15 минут</option><option>Каждый час</option></select>
-            </div>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:16px">
-            <button class="btn btn-secondary" onclick="test1C()">Проверить подключение</button>
-            <button class="btn btn-primary">Сохранить</button>
-          </div>
-        </div>
-        <!-- AI Tab -->
-        <div class="settings-tab" id="tab-ai">
-          <div class="settings-section-title">Настройки ИИ-ассистента</div>
-          <div class="settings-row">
-            <div class="settings-row-label">Модель ИИ</div>
-            <div class="settings-row-value">
-              <select class="settings-select">
-                <option selected>GigaChat Pro (Сбер)</option>
-                <option>YandexGPT 4</option>
-                <option>GPT-4o (OpenAI)</option>
-                <option>Claude 3.5 Sonnet</option>
-              </select>
-            </div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">ИИ-помощник активен</div>
-            <div class="settings-row-value"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Авто-анализ документов</div>
-            <div class="settings-row-value"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Проверка контрагентов</div>
-            <div class="settings-row-value"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Голосовой ввод</div>
-            <div class="settings-row-value"><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Сохранять историю чатов</div>
-            <div class="settings-row-value"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">API-ключ</div>
-            <div class="settings-row-value"><input class="settings-input" type="password" value="••••••••••••••••••••"></div>
-          </div>
-          <button class="btn btn-primary" style="margin-top:16px">Сохранить</button>
-        </div>
-        <!-- Notifications Tab -->
-        <div class="settings-tab" id="tab-notif">
-          <div class="settings-section-title">Уведомления</div>
-          <div class="settings-row">
-            <div class="settings-row-label">Email-уведомления</div>
-            <div class="settings-row-value"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Push-уведомления</div>
-            <div class="settings-row-value"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Критические ошибки</div>
-            <div class="settings-row-value"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Сроки налоговых платежей</div>
-            <div class="settings-row-value"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Новые документы от операторов</div>
-            <div class="settings-row-value"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Системные обновления</div>
-            <div class="settings-row-value"><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">За сколько дней напоминать</div>
-            <div class="settings-row-value">
-              <select class="settings-select"><option>За 1 день</option><option>За 2 дня</option><option selected>За 3 дня</option><option>За 5 дней</option><option>За 7 дней</option></select>
-            </div>
-          </div>
-          <button class="btn btn-primary" style="margin-top:16px">Сохранить</button>
-        </div>
-        <!-- Users Tab -->
-        <div class="settings-tab" id="tab-users">
-          <div class="settings-section-title">Управление пользователями</div>
-          <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
-            <button class="btn btn-primary btn-sm" onclick="showModal('modal-add-user')">+ Добавить пользователя</button>
-          </div>
-          <table class="data-table">
-            <thead><tr><th>Имя</th><th>Email</th><th>Роль</th><th>Статус</th><th></th></tr></thead>
-            <tbody>
-              <tr><td>Петрова К.А.</td><td>k.petrova@tp.ru</td><td><span class="badge badge-accent">Бухгалтер</span></td><td><span class="badge badge-ok">Активен</span></td><td><button class="btn btn-ghost btn-sm">✏️</button></td></tr>
-              <tr><td>Соколов Д.М.</td><td>d.sokolov@tp.ru</td><td><span class="badge" style="background:var(--warn-lt);color:var(--warn)">Директор</span></td><td><span class="badge badge-ok">Активен</span></td><td><button class="btn btn-ghost btn-sm">✏️</button></td></tr>
-              <tr><td>Иванова М.С.</td><td>m.ivanova@tp.ru</td><td><span class="badge" style="background:#F3F4F6;color:var(--text2)">Оператор</span></td><td><span class="badge badge-ok">Активен</span></td><td><button class="btn btn-ghost btn-sm">✏️</button></td></tr>
-              <tr><td>Кузнецов П.В.</td><td>p.kuznetsov@tp.ru</td><td><span class="badge" style="background:#F3F4F6;color:var(--text2)">Оператор</span></td><td><span class="badge" style="background:#F3F4F6;color:var(--text2)">Неактивен</span></td><td><button class="btn btn-ghost btn-sm">✏️</button></td></tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- Security Tab -->
-        <div class="settings-tab" id="tab-security">
-          <div class="settings-section-title">Безопасность</div>
-          <div class="settings-row">
-            <div class="settings-row-label">Двухфакторная аутентификация</div>
-            <div class="settings-row-value"><label class="toggle-switch"><input type="checkbox"><span class="toggle-slider"></span></label></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Сессия (таймаут)</div>
-            <div class="settings-row-value">
-              <select class="settings-select"><option>30 минут</option><option selected>1 час</option><option>4 часа</option><option>8 часов</option></select>
-            </div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Логировать все действия</div>
-            <div class="settings-row-value"><label class="toggle-switch"><input type="checkbox" checked><span class="toggle-slider"></span></label></div>
-          </div>
-          <div class="settings-section-title" style="margin-top:20px">Смена пароля</div>
-          <div class="settings-row">
-            <div class="settings-row-label">Текущий пароль</div>
-            <div class="settings-row-value"><input class="settings-input" type="password" placeholder="Введите текущий пароль"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Новый пароль</div>
-            <div class="settings-row-value"><input class="settings-input" type="password" placeholder="Минимум 8 символов"></div>
-          </div>
-          <div class="settings-row">
-            <div class="settings-row-label">Подтверждение</div>
-            <div class="settings-row-value"><input class="settings-input" type="password" placeholder="Повторите пароль"></div>
-          </div>
-          <button class="btn btn-primary" style="margin-top:16px">Изменить пароль</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 
 <script>
-// ─── App State ───────────────────────────────────────────────
-const APP = {
-  role: 'director',
-  screen: 'screen-login',
-  roles: {
-    director:   { name:'Соколов Д.М.',  title:'Директор',     avatar:'ДС', homeScreen:'screen-0' },
-    accountant: { name:'Петрова К.А.',  title:'Главный бухгалтер', avatar:'ПК', homeScreen:'screen-1' },
-    operator:   { name:'Иванова М.С.',  title:'Оператор',     avatar:'ИМ', homeScreen:'screen-5' }
-  },
-  navMenus: {
-    director: [
-      { icon:'📊', label:'Дашборд', screen:'screen-0' },
-      { icon:'💰', label:'Финансы', screen:'screen-7' },
-      { icon:'📋', label:'Дебиторка', screen:'screen-11' },
-      { icon:'📑', label:'Кредиторка', screen:'screen-12' },
-      { icon:'📅', label:'Задачи', screen:'screen-13' },
-      { icon:'🔔', label:'Уведомления', screen:'screen-15' }
-    ],
-    accountant: [
-      { icon:'🏠', label:'Рабочий стол', screen:'screen-1' },
-      { icon:'🤖', label:'ИИ-ассистент', screen:'screen-2' },
-      { icon:'📄', label:'Документы', screen:'screen-3' },
-      { icon:'📥', label:'Входящие', screen:'screen-5' },
-      { icon:'💳', label:'Платежи', screen:'screen-7' },
-      { icon:'📊', label:'НДС', screen:'screen-8' },
-      { icon:'📈', label:'Отчёты', screen:'screen-9' },
-      { icon:'🔄', label:'Закрытие месяца', screen:'screen-10' },
-      { icon:'🏢', label:'Контрагенты', screen:'screen-14' },
-      { icon:'🔔', label:'Уведомления', screen:'screen-15' }
-    ],
-    operator: [
-      { icon:'📥', label:'Входящие документы', screen:'screen-5' },
-      { icon:'➕', label:'Создать документ', screen:'screen-6' },
-      { icon:'📄', label:'Мои документы', screen:'screen-3' },
-      { icon:'✅', label:'Задачи', screen:'screen-13' },
-      { icon:'🔔', label:'Уведомления', screen:'screen-15' }
-    ]
-  }
+const ROLES = {
+  director:   {av:'ДС', name:'Соколов Д.М.',  role:'Директор',           home:'screen-0'},
+  accountant: {av:'ПК', name:'Петрова К.А.',  role:'Гл. бухгалтер',      home:'screen-1'},
+  operator:   {av:'ИМ', name:'Иванова М.С.',  role:'Оператор',           home:'screen-5'}
+};
+const MENUS = {
+  director:[
+    ['📊','Дашборд','screen-0'],
+    ['💰','Финансы','screen-7'],
+    ['📋','Дебиторка','screen-11'],
+    ['📤','Кредиторка','screen-12'],
+    ['✅','Задачи','screen-13'],
+    ['🔔','Уведомления','screen-15']
+  ],
+  accountant:[
+    ['🏠','Рабочий стол','screen-1'],
+    ['🤖','ИИ-ассистент','screen-2'],
+    ['📄','Документы','screen-3'],
+    ['📥','Входящие','screen-5'],
+    ['💳','Платежи','screen-7'],
+    ['📊','НДС','screen-8'],
+    ['📈','Отчёты','screen-9'],
+    ['🔄','Закрытие месяца','screen-10'],
+    ['🏢','Контрагенты','screen-14'],
+    ['🔔','Уведомления','screen-15']
+  ],
+  operator:[
+    ['📥','Входящие документы','screen-5'],
+    ['➕','Создать документ','screen-6'],
+    ['📄','Мои документы','screen-3'],
+    ['✅','Задачи','screen-13'],
+    ['🔔','Уведомления','screen-15']
+  ]
 };
 
-// ─── Navigation ──────────────────────────────────────────────
-function navigate(screenId) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const target = document.getElementById(screenId);
-  if (target) {
-    target.classList.add('active');
-    APP.screen = screenId;
-  }
-  // update active nav item
-  document.querySelectorAll('.nav-item').forEach(el => {
-    el.classList.toggle('active', el.dataset.screen === screenId);
-  });
-  // close sidebar on mobile
-  if (window.innerWidth < 900) closeSidebar();
-  window.scrollTo(0,0);
-}
+let CUR_ROLE = 'director';
 
-function toggleNav() {
-  const sb = document.getElementById('sidebar');
-  const ov = document.getElementById('sidebar-overlay');
-  sb.classList.toggle('open');
-  ov.classList.toggle('visible');
-}
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sidebar-overlay').classList.remove('visible');
-}
-
-// ─── Auth ────────────────────────────────────────────────────
-let selectedLoginRole = 'director';
-function selectRole(btn, role) {
-  document.querySelectorAll('.role-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  selectedLoginRole = role;
-  const demos = { director:'d.sokolov@techprom.ru', accountant:'k.petrova@techprom.ru', operator:'m.ivanova@techprom.ru' };
-  document.getElementById('login-email').value = demos[role];
-}
-function doLogin() {
-  APP.role = selectedLoginRole;
-  const r = APP.roles[APP.role];
-  document.getElementById('role-avatar').textContent = r.avatar;
-  document.getElementById('role-name').textContent = r.name;
-  document.getElementById('role-title').textContent = r.title;
-  buildNav();
-  navigate(r.homeScreen);
-}
-function doLogout() {
-  navigate('screen-login');
-  closeSidebar();
-}
-function cycleRole() {
-  const order = ['director','accountant','operator'];
-  const idx = order.indexOf(APP.role);
-  APP.role = order[(idx+1) % order.length];
-  const r = APP.roles[APP.role];
-  document.getElementById('role-avatar').textContent = r.avatar;
-  document.getElementById('role-name').textContent = r.name;
-  document.getElementById('role-title').textContent = r.title;
-  buildNav();
-  navigate(r.homeScreen);
-}
 function buildNav() {
-  const nav = document.getElementById('sidebar-nav');
-  const items = APP.navMenus[APP.role] || [];
-  nav.innerHTML = items.map(item =>
-    `<div class="nav-item" data-screen="${item.screen}" onclick="navigate('${item.screen}')">
-      <span class="nav-icon">${item.icon}</span>${item.label}
-    </div>`
+  const r = ROLES[CUR_ROLE];
+  document.getElementById('sb-av').textContent = r.av;
+  document.getElementById('sb-uname').textContent = r.name;
+  document.getElementById('sb-urole').textContent = r.role;
+  document.getElementById('sb-nav').innerHTML = MENUS[CUR_ROLE].map(([ic,lbl,sc]) =>
+    `<button class="ni" data-sc="${sc}" onclick="nav('${sc}')"><span class="ni-ic">${ic}</span>${lbl}</button>`
   ).join('');
 }
 
-// ─── Modals ──────────────────────────────────────────────────
-function showModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function nav(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const t = document.getElementById(id);
+  if (t) { t.classList.add('active'); window.scrollTo(0,0); }
+  document.querySelectorAll('#sb-nav .ni').forEach(b =>
+    b.classList.toggle('active', b.dataset.sc === id)
+  );
+  if (window.innerWidth < 900) sbClose();
+}
 
-// ─── AI Chat ─────────────────────────────────────────────────
-function sendChat() {
-  const inp = document.getElementById('chat-input');
+function sbToggle() {
+  document.getElementById('sb').classList.toggle('open');
+  document.getElementById('sb-ov').classList.toggle('on');
+}
+function sbClose() {
+  document.getElementById('sb').classList.remove('open');
+  document.getElementById('sb-ov').classList.remove('on');
+}
+
+let loginRole = 'director';
+function pickRole(el, r) {
+  document.querySelectorAll('.role-tab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  loginRole = r;
+  const demos = {director:'d.sokolov@techprom.ru', accountant:'k.petrova@techprom.ru', operator:'m.ivanova@techprom.ru'};
+  document.getElementById('le').value = demos[r];
+}
+function doLogin() {
+  CUR_ROLE = loginRole;
+  buildNav();
+  nav(ROLES[CUR_ROLE].home);
+  // update settings profile display
+  const r = ROLES[CUR_ROLE];
+  const av = document.getElementById('prof-av');
+  const nm = document.getElementById('prof-name');
+  const rl = document.getElementById('prof-role');
+  if (av) av.textContent = r.av;
+  if (nm) nm.textContent = r.name;
+  if (rl) rl.textContent = r.role;
+}
+function doLogout() { nav('screen-login'); sbClose(); }
+function cycleRole() {
+  const order = ['director','accountant','operator'];
+  CUR_ROLE = order[(order.indexOf(CUR_ROLE)+1)%3];
+  buildNav();
+  nav(ROLES[CUR_ROLE].home);
+}
+
+function showModal(id) { document.getElementById(id).classList.add('open'); }
+function closeM(id) { document.getElementById(id).classList.remove('open'); }
+
+function ft(el) {
+  el.closest('.fbar').querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+function stab(el, id) {
+  el.closest('.settings-wrap').querySelectorAll('.st-item').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  el.closest('.settings-wrap').querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function nfilt(el, t) {
+  el.closest('.fbar').querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.notif-item').forEach(item =>
+    item.style.display = (t==='all' || item.dataset.t===t) ? '' : 'none'
+  );
+}
+function markRead() { document.querySelectorAll('.notif-item.unread').forEach(i => i.classList.remove('unread')); }
+
+function qs(txt) {
+  const inp = document.getElementById('chat-inp');
+  if (inp) { inp.value = txt; inp.focus(); }
+}
+function sendMsg() {
+  const inp = document.getElementById('chat-inp');
   if (!inp || !inp.value.trim()) return;
-  const msg = inp.value.trim();
-  inp.value = '';
-  const msgs = document.getElementById('chat-messages');
-  if (!msgs) return;
-  // add user message
-  const userDiv = document.createElement('div');
-  userDiv.className = 'chat-msg user-msg';
-  userDiv.innerHTML = `<div class="chat-bubble">${msg}</div>`;
-  msgs.appendChild(userDiv);
-  // simulate AI response
+  const msg = inp.value.trim(); inp.value = '';
+  const msgs = document.getElementById('chat-msgs');
+  const udiv = document.createElement('div');
+  udiv.className = 'chat-msg user';
+  udiv.innerHTML = `<div class="chat-bubble">${msg}</div>`;
+  msgs.appendChild(udiv);
+  const replies = [
+    'Анализирую данные... По НДС нарушений не обнаружено. Все проводки корректны.',
+    'Проверил базу ФНС. Контрагент активен, задолженностей нет.',
+    'Рассчитал налоговую нагрузку: 12.4% от выручки — в пределах нормы для вашей отрасли.',
+    'Обнаружена возможная ошибка в расчёте НДС. Рекомендую проверить счёт-фактуру №СФ-0891.',
+    'Документы оформлены корректно. Можно подписывать и отправлять.'
+  ];
   setTimeout(() => {
-    const aiDiv = document.createElement('div');
-    aiDiv.className = 'chat-msg ai-msg';
-    const responses = [
-      'Анализирую данные... По результатам проверки нарушений не обнаружено.',
-      'На основании актуального законодательства рекомендую следующий порядок действий...',
-      'Проверил данные в базе 1С. Операция корректна, проводки сформированы.',
-      'Обнаружена потенциальная ошибка в счёт-фактуре. Рекомендую пересмотреть НДС.',
-      'Расчёт выполнен: налоговая нагрузка составляет 12.4% от выручки — в пределах нормы.'
-    ];
-    const resp = responses[Math.floor(Math.random()*responses.length)];
-    aiDiv.innerHTML = `<div class="ai-avatar">ИИ</div><div class="chat-bubble">${resp}</div>`;
-    msgs.appendChild(aiDiv);
+    const adiv = document.createElement('div');
+    adiv.className = 'chat-msg ai';
+    adiv.innerHTML = `<div class="ai-av">ИИ</div><div class="chat-bubble">${replies[Math.floor(Math.random()*replies.length)]}</div>`;
+    msgs.appendChild(adiv);
     msgs.scrollTop = msgs.scrollHeight;
-  }, 800);
+  }, 700);
   msgs.scrollTop = msgs.scrollHeight;
 }
-function chatShortcut(text) {
-  const inp = document.getElementById('chat-input');
-  if (inp) { inp.value = text; inp.focus(); }
-}
-
-// ─── Settings Tabs ───────────────────────────────────────────
-function showSettingsTab(el, tabId) {
-  document.querySelectorAll('.settings-nav-item').forEach(i => i.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
-  const tab = document.getElementById(tabId);
-  if (tab) tab.classList.add('active');
-}
-
-// ─── Notification filters ────────────────────────────────────
-function filterNotifs(btn, type) {
-  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.notif-item').forEach(item => {
-    item.style.display = (type === 'all' || item.dataset.type === type) ? '' : 'none';
-  });
-}
-function markAllRead() {
-  document.querySelectorAll('.notif-item.unread').forEach(i => i.classList.remove('unread'));
-}
-function dismissNotif(btn) { btn.closest('.notif-item').remove(); }
-
-// ─── Misc helpers ────────────────────────────────────────────
-function test1C() {
-  const btn = event.target;
-  btn.textContent = 'Проверяю...'; btn.disabled = true;
+function t1c(e) {
+  const btn = e.target; btn.textContent = 'Проверяю...'; btn.disabled = true;
   setTimeout(() => { btn.textContent = '✅ Подключено'; btn.disabled = false; }, 1500);
 }
-
-// ─── Chat Enter key ──────────────────────────────────────────
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter' && document.activeElement.id === 'chat-input') sendChat();
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.activeElement.id === 'chat-inp') sendMsg();
 });
-
-// init
 buildNav();
 </script>
 
