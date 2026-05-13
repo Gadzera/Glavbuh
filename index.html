@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLAVBUH.AI — Интерактивный прототип</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',Inter,sans-serif;background:#0F1117;color:#F1F5F9;min-height:100vh}
+:root{--blue:#3B82F6;--green:#22C55E;--red:#EF4444;--yellow:#F59E0B;--card:#1E2436;--sidebar:#161B27;--border:#2A3354;--muted:#64748B}
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:220px;min-width:220px;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:16px 10px}
+.logo{color:var(--blue);font-size:18px;font-weight:800;letter-spacing:1px;padding:8px 10px 20px}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;border:none;background:none;color:#94A3B8;font-size:13px;width:100%;text-align:left;transition:all .15s}
+.nav-btn:hover{background:rgba(59,130,246,.1);color:#F1F5F9}
+.nav-btn.active{background:rgba(59,130,246,.15);color:var(--blue);font-weight:600}
+.nav-btn .ic{font-size:16px;width:20px;text-align:center}
+.sep{border:none;border-top:1px solid var(--border);margin:10px 0}
+.spacer{flex:1}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:52px;background:var(--sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0}
+.company-sel{background:#1E2436;border:1px solid var(--border);color:#F1F5F9;padding:6px 14px;border-radius:8px;font-size:13px;cursor:pointer}
+.spacer-h{flex:1}
+.badge{padding:4px 10px;border-radius:12px;font-size:12px;font-weight:500}
+.badge.ok{background:rgba(34,197,94,.15);color:#22C55E}
+.badge.warn{background:rgba(245,158,11,.15);color:#F59E0B}
+.badge.err{background:rgba(239,68,68,.15);color:#EF4444}
+.badge.info{background:rgba(59,130,246,.15);color:#3B82F6}
+.screen{flex:1;overflow-y:auto;padding:24px;display:none}
+.screen.active{display:block}
+h1{font-size:20px;font-weight:700;margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:16px}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+@media(max-width:700px){.stat-row{grid-template-columns:repeat(2,1fr)}.sidebar{display:none}.mob-nav{display:flex!important}.screen{padding:16px;padding-bottom:80px}}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.stat-card .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.stat-card .val{font-size:22px;font-weight:700}
+.stat-card .sub{font-size:11px;color:var(--muted);margin-top:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 10px;color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;border-bottom:1px solid var(--border)}
+td{padding:10px;border-bottom:1px solid rgba(42,51,84,.5)}
+tr:last-child td{border-bottom:none}
+.btn{padding:8px 16px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:opacity .15s}
+.btn:hover{opacity:.85}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-secondary{background:#1E2436;color:#F1F5F9;border:1px solid var(--border)}
+.btn-danger{background:var(--red);color:#fff;width:100%;padding:10px}
+.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-hdr h2{font-size:15px;font-weight:600}
+.drop-zone{border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;color:var(--muted);font-size:13px;margin-bottom:14px;cursor:pointer}
+.search-row{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+input[type=text],input[type=password]{background:#1E2436;border:1px solid var(--border);color:#F1F5F9;padding:8px 12px;border-radius:8px;font-size:13px;width:100%}
+input::placeholder{color:var(--muted)}
+.filter-btn{background:#1E2436;border:1px solid var(--border);color:#94A3B8;padding:7px 14px;border-radius:8px;cursor:pointer;font-size:12px;white-space:nowrap}
+.filter-btn.active{background:rgba(59,130,246,.15);border-color:var(--blue);color:var(--blue)}
+.report-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:700px){.report-grid{grid-template-columns:1fr}}
+.report-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;min-height:160px}
+.report-card .rc-title{font-weight:700;font-size:14px}
+.report-card .rc-meta{font-size:11px;color:var(--muted)}
+.report-card .rc-foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto}
+.event-row{background:var(--card);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;gap:14px;padding:12px 16px;margin-bottom:8px;flex-wrap:wrap}
+.ev-stripe{width:4px;height:40px;border-radius:2px;flex-shrink:0}
+.ev-date{font-weight:700;font-size:13px;min-width:100px}
+.ev-text .t{font-weight:600;font-size:13px}
+.ev-text .s{font-size:11px;color:var(--muted)}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:16px}
+@media(max-width:700px){.plans{grid-template-columns:1fr}}
+.plan-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.plan-card.current{border-color:var(--blue);background:rgba(59,130,246,.05)}
+.plan-card .price{font-size:22px;font-weight:800;color:var(--blue);margin:6px 0}
+.plan-card .feat{font-size:12px;color:#94A3B8;margin:3px 0}
+.plan-card .feat.yes{color:#F1F5F9}
+.chat-area{display:flex;flex-direction:column;height:calc(100vh - 140px)}
+.messages{flex:1;overflow-y:auto;padding-bottom:16px}
+.bubble{max-width:70%;padding:12px 16px;border-radius:12px;font-size:13px;line-height:1.5;margin-bottom:10px}
+.bubble.bot{background:var(--card);border:1px solid var(--border);margin-right:auto}
+.bubble.user{background:var(--blue);color:#fff;margin-left:auto}
+.chat-input{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 14px}
+.chat-input input{flex:1;background:none;border:none;color:#F1F5F9;font-size:13px;outline:none}
+.voice-btn{background:rgba(59,130,246,.15);border:1px solid var(--blue);color:var(--blue);border-radius:20px;padding:6px 16px;font-size:12px;cursor:pointer}
+.settings-section{margin-bottom:20px}
+.settings-section h3{font-size:13px;font-weight:600;color:var(--blue);margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px}
+.form-row{display:grid;grid-template-columns:140px 1fr;gap:10px;align-items:center;margin-bottom:10px}
+.form-lbl{font-size:13px;color:var(--muted);text-align:right}
+.progress{background:#1E2436;border-radius:4px;height:6px;margin:8px 0}
+.progress-bar{background:var(--blue);height:6px;border-radius:4px;width:63%}
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--sidebar);border-top:1px solid var(--border);z-index:100;padding:8px 0}
+.mob-nav-inner{display:flex;justify-content:space-around}
+.mob-btn{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--muted);cursor:pointer;padding:4px 8px;border:none;background:none}
+.mob-btn.active{color:var(--blue)}
+.mob-btn .ic{font-size:20px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="sidebar">
+  <div class="logo">GLAVBUH.AI</div>
+  <button class="nav-btn active" onclick="show(0,this)"><span class="ic">🏠</span>Главная</button>
+  <button class="nav-btn" onclick="show(1,this)"><span class="ic">💬</span>Чат с бухгалтером</button>
+  <button class="nav-btn" onclick="show(2,this)"><span class="ic">📄</span>Документы</button>
+  <button class="nav-btn" onclick="show(3,this)"><span class="ic">📊</span>Отчётность</button>
+  <button class="nav-btn" onclick="show(4,this)"><span class="ic">🏦</span>Банк</button>
+  <button class="nav-btn" onclick="show(5,this)"><span class="ic">👥</span>Контрагенты</button>
+  <button class="nav-btn" onclick="show(6,this)"><span class="ic">📅</span>Календарь налогов</button>
+  <div class="spacer"></div>
+  <hr class="sep">
+  <button class="nav-btn" onclick="show(7,this)"><span class="ic">⚙️</span>Настройки</button>
+  <button class="nav-btn" onclick="show(8,this)"><span class="ic">👤</span>Личный кабинет</button>
+</div>
+<div class="main">
+  <div class="topbar">
+    <select class="company-sel"><option>ООО "Ромашка"</option><option>ИП Иванов А.В.</option></select>
+    <div class="spacer-h"></div>
+    <span class="badge ok">● Синхронизировано</span>
+    <button class="btn btn-secondary" style="padding:6px 10px">🔔</button>
+    <button class="btn btn-secondary" style="padding:6px 12px;border-radius:50%">GA</button>
+  </div>
+
+  <div class="screen active" id="s0">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <h1 style="margin:0">Доброе утро! Среда, 13 мая 2026</h1>
+      <span class="badge ok">● Синхронизировано</span>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card"><div class="lbl">На счетах</div><div class="val">2 450 000 ₽</div><div class="sub">▲ +120 000 vs прошлый мес</div></div>
+      <div class="stat-card"><div class="lbl">Выручка (май)</div><div class="val" style="color:var(--green)">890 000 ₽</div><div class="sub">за текущий месяц</div></div>
+      <div class="stat-card"><div class="lbl">Расходы (май)</div><div class="val" style="color:var(--red)">340 000 ₽</div><div class="sub">за текущий месяц</div></div>
+      <div class="stat-card"><div class="lbl">Прибыль (май)</div><div class="val" style="color:var(--blue)">550 000 ₽</div><div class="sub">Маржа: 61%</div></div>
+    </div>
+    <div class="grid2">
+      <div>
+        <div class="card"><div class="section-hdr"><h2>Дебиторы — нам должны</h2><span style="color:var(--red);font-weight:700">260 000 ₽</span></div><table><tr><th>Контрагент</th><th>Сумма</th><th>Статус</th></tr><tr><td>ООО Альфа</td><td>150 000 ₽</td><td><span class="badge ok">✅ Вовремя</span></td></tr><tr><td>ИП Петров</td><td>80 000 ₽</td><td><span class="badge warn">⚠️ 5 дней</span></td></tr><tr><td>ООО Бета</td><td>30 000 ₽</td><td><span class="badge err">🔴 21 день</span></td></tr></table><button class="btn-danger" style="margin-top:12px;border-radius:8px;font-size:13px">Заблокировать отгрузку должникам</button></div>
+        <div class="card"><div class="section-hdr"><h2>Задачи бухгалтеру</h2></div><p style="font-size:13px;margin-bottom:6px">⏳  Разнести банковскую выписку</p><p style="font-size:13px;margin-bottom:6px">⏳  Подготовить декларацию НДС</p><p style="font-size:13px;color:var(--green);margin-bottom:10px">✅  Акт с ООО Ромашка — подписан</p><button class="btn btn-secondary">+ Добавить задачу</button></div>
+      </div>
+      <div>
+        <div class="card"><div class="section-hdr"><h2>Кредиторы — мы должны</h2><span style="color:var(--yellow);font-weight:700">225 000 ₽</span></div><table><tr><th>Контрагент</th><th>Сумма</th><th>Срок</th></tr><tr><td>ИП Кузнецов</td><td>45 000 ₽</td><td><span class="badge err">Сегодня</span></td></tr><tr><td>ООО Поставщик</td><td>120 000 ₽</td><td><span class="badge warn">3 дня</span></td></tr><tr><td>Аренда офиса</td><td>60 000 ₽</td><td><span class="badge ok">7 дней</span></td></tr></table></div>
+        <div class="card"><div class="section-hdr"><h2>Налоговый календарь</h2></div><table><tr><th>Дата</th><th>Событие</th></tr><tr><td style="color:var(--red);font-weight:700">20 мая</td><td>🔴 НДС за 1 квартал</td></tr><tr><td style="color:var(--yellow);font-weight:700">28 мая</td><td>🟡 Аванс УСН Q1</td></tr><tr><td style="color:var(--green);font-weight:700">30 июня</td><td>🟢 6-НДФЛ за полугодие</td></tr><tr><td style="color:var(--green);font-weight:700">25 июля</td><td>🟢 НДС за 2 квартал</td></tr></table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="s1">
+    <h1>💬 Чат с бухгалтером</h1>
+    <div class="chat-area">
+      <div class="messages" id="msgs">
+        <div class="bubble bot">Здравствуйте! Я ваш AI-бухгалтер. Спрашивайте про НДС, дебиторку, документы — всё что угодно.</div>
+        <div class="bubble user">Сколько денег на счетах?</div>
+        <div class="bubble bot">На расчётных счетах ООО "Ромашка":<br><br>🏦 Сбербанк: <b>1 850 000 ₽</b><br>🏦 Тинькофф: <b>600 000 ₽</b><br><br>Итого: <b>2 450 000 ₽</b> (+120 000 ₽ к прошлому месяцу)</div>
+      </div>
+      <div class="chat-input">
+        <input id="chat-in" type="text" placeholder="Напишите вопрос…" onkeydown="if(event.key==='Enter')sendMsg()">
+        <button class="voice-btn">🎤 Диктовать</button>
+        <button class="btn btn-primary" onclick="sendMsg()">Отправить →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="s2">
+    <div class="section-hdr"><h1 style="margin:0">Документы</h1><button class="btn btn-primary">+ Создать</button></div>
+    <div class="drop-zone">📂  Перетащите PDF / фото УПД сюда или <u>выберите файл</u></div>
+    <div class="search-row">
+      <input type="text" placeholder="🔍  Поиск…" style="flex:1;min-width:150px">
+      <button class="filter-btn active">Все</button>
+      <button class="filter-btn">Входящие</button>
+      <button class="filter-btn">Исходящие</button>
+      <button class="filter-btn">Акты</button>
+    </div>
+    <div class="card" style="padding:0;overflow-x:auto"><table><tr><th>Документ</th><th>Контрагент</th><th>Дата</th><th>Сумма</th><th>Статус</th></tr><tr><td>УПД №145</td><td>ООО Поставщик</td><td>12.05</td><td>180 000 ₽</td><td><span class="badge ok">Входящий</span></td></tr><tr><td>Счёт №47</td><td>ООО Ромашка</td><td>11.05</td><td>90 000 ₽</td><td><span class="badge info">Исходящий</span></td></tr><tr><td>Акт №38</td><td>ИП Кузнецов</td><td>10.05</td><td>45 000 ₽</td><td><span class="badge warn">Акт</span></td></tr><tr><td>УПД №144</td><td>ООО Альфа</td><td>09.05</td><td>230 000 ₽</td><td><span class="badge ok">Входящий</span></td></tr><tr><td>Накладная №12</td><td>ООО Бета</td><td>08.05</td><td>67 500 ₽</td><td><span class="badge err">Входящий</span></td></tr></table></div>
+  </div>
+
+  <div class="screen" id="s3">
+    <div class="section-hdr"><h1 style="margin:0">Отчётность</h1><button class="btn btn-primary">🤖 Подготовить всё</button></div>
+    <div class="report-grid">
+      <div class="report-card"><div style="font-size:24px">📋</div><div class="rc-title">Декларация НДС</div><div class="rc-meta">1 кв. 2026 · до 20 мая</div><div style="color:var(--blue);font-weight:700">890 000 ₽</div><div class="rc-foot"><span class="badge warn">Ожидает подписи</span><button class="btn btn-primary" style="padding:5px 12px;font-size:12px">Подписать</button></div></div>
+      <div class="report-card"><div style="font-size:24px">👥</div><div class="rc-title">6-НДФЛ</div><div class="rc-meta">1 кв. 2026 · до 30 апр</div><div class="rc-foot"><span class="badge ok">Сдан</span><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px">Скачать</button></div></div>
+      <div class="report-card"><div style="font-size:24px">🏛️</div><div class="rc-title">РСВ</div><div class="rc-meta">1 кв. 2026 · до 30 апр</div><div class="rc-foot"><span class="badge ok">Сдан</span><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px">Скачать</button></div></div>
+      <div class="report-card"><div style="font-size:24px">📊</div><div class="rc-title">Бухгалтерский баланс</div><div class="rc-meta">2025 год · до 31 марта</div><div class="rc-foot"><span class="badge ok">Сдан</span><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px">Скачать</button></div></div>
+      <div class="report-card"><div style="font-size:24px">📗</div><div class="rc-title">Книга покупок</div><div class="rc-meta">1 кв. 2026 · Авто</div><div class="rc-foot"><span class="badge ok">Актуальна</span><button class="btn btn-secondary" style="padding:5px 12px;font-size:12px">Скачать</button></div></div>
+      <div class="report-card"><div style="font-size:24px">💼</div><div class="rc-title">Налог на прибыль</div><div class="rc-meta">1 кв. 2026 · до 28 апр</div><div class="rc-foot"><span class="badge err">Просрочен</span><button class="btn btn-danger" style="padding:5px 12px;font-size:12px;width:auto;border-radius:8px">Подготовить</button></div></div>
+    </div>
+  </div>
+
+  <div class="screen" id="s4">
+    <div class="section-hdr"><h1 style="margin:0">Банк</h1><div style="display:flex;gap:8px"><button class="btn btn-secondary">↑ MT940</button><button class="btn btn-primary">🤖 Авто-разноска</button></div></div>
+    <div class="stat-row"><div class="stat-card"><div class="lbl">Текущий остаток</div><div class="val">2 450 000 ₽</div><div class="sub">На сегодня</div></div><div class="stat-card"><div class="lbl">Приход за май</div><div class="val" style="color:var(--green)">407 500 ₽</div><div class="sub">8 операций</div></div><div class="stat-card"><div class="lbl">Расход за май</div><div class="val" style="color:var(--red)">1 775 000 ₽</div><div class="sub">7 операций</div></div><div class="stat-card"><div class="lbl">Не разнесено</div><div class="val" style="color:var(--yellow)">67 500 ₽</div><div class="sub">1 операция ⚠️</div></div></div>
+    <div class="card" style="padding:0;overflow-x:auto"><table><tr><th>Дата</th><th>Контрагент</th><th>Назначение</th><th>Расход</th><th>Приход</th><th>Статус</th></tr><tr><td>13.05</td><td>ООО Альфа</td><td>Оплата сч. №145</td><td></td><td style="color:var(--green)">180 000 ₽</td><td><span class="badge ok">Разнесено</span></td></tr><tr><td>12.05</td><td>Аренда офиса</td><td>Аренда май 2026</td><td style="color:var(--red)">60 000 ₽</td><td></td><td><span class="badge ok">Разнесено</span></td></tr><tr><td>11.05</td><td>ООО Снаб</td><td>Поставка оборудования</td><td style="color:var(--red)">410 000 ₽</td><td></td><td><span class="badge warn">Частично</span></td></tr><tr><td>10.05</td><td>ФНС России</td><td>НДС за 1 кв. 2026</td><td style="color:var(--red)">890 000 ₽</td><td></td><td><span class="badge ok">Разнесено</span></td></tr><tr><td>08.05</td><td>Зарплата</td><td>Выплата з/п май</td><td style="color:var(--red)">250 000 ₽</td><td></td><td><span class="badge ok">Разнесено</span></td></tr><tr><td>07.05</td><td>ООО Бета</td><td>Предоплата по дог. №12</td><td></td><td style="color:var(--green)">67 500 ₽</td><td><span class="badge err">Не разнесено</span></td></tr></table></div>
+  </div>
+
+  <div class="screen" id="s5">
+    <div class="section-hdr"><h1 style="margin:0">Контрагенты</h1><button class="btn btn-primary">+ Добавить</button></div>
+    <div class="search-row"><input type="text" placeholder="🔍  Поиск по названию или ИНН…" style="flex:1;min-width:150px"><button class="filter-btn active">Все</button><button class="filter-btn">Клиенты</button><button class="filter-btn">Поставщики</button><button class="filter-btn">Должники</button></div>
+    <div class="card" style="padding:0;overflow-x:auto"><table><tr><th>Наименование</th><th>ИНН</th><th>Тип</th><th>Баланс</th><th>Статус</th></tr><tr><td>ООО Альфа</td><td>7701234567</td><td>Клиент</td><td style="color:var(--green)">150 000 ₽</td><td><span class="badge ok">Норм</span></td></tr><tr><td>ООО Бета</td><td>7709876543</td><td>Поставщик</td><td style="color:var(--red)">−67 500 ₽</td><td><span class="badge err">Просрочен</span></td></tr><tr><td>ИП Петров А.В.</td><td>500123456</td><td>Клиент</td><td style="color:var(--green)">80 000 ₽</td><td><span class="badge warn">Внимание</span></td></tr><tr><td>ООО Ромашка</td><td>7712345678</td><td>Клиент</td><td style="color:var(--green)">115 000 ₽</td><td><span class="badge ok">Норм</span></td></tr><tr><td>ООО Снаб</td><td>7798765432</td><td>Поставщик</td><td style="color:var(--red)">−410 000 ₽</td><td><span class="badge ok">Норм</span></td></tr><tr><td>АО МегаСтрой</td><td>7711112222</td><td>Клиент</td><td style="color:var(--green)">230 000 ₽</td><td><span class="badge ok">Норм</span></td></tr></table></div>
+  </div>
+
+  <div class="screen" id="s6">
+    <div class="section-hdr"><h1 style="margin:0">Налоговый календарь</h1><button class="btn btn-secondary">🔔 Telegram</button></div>
+    <div class="stat-row"><div class="stat-card"><div class="val" style="color:var(--red)">1</div><div class="sub">Просрочено</div></div><div class="stat-card"><div class="val" style="color:var(--yellow)">2</div><div class="sub">Срочно</div></div><div class="stat-card"><div class="val" style="color:var(--blue)">5</div><div class="sub">Предстоит</div></div><div class="stat-card"><div class="val" style="color:var(--green)">4</div><div class="sub">Сдано</div></div></div>
+    <div class="event-row"><div class="ev-stripe" style="background:var(--red)"></div><div class="ev-date" style="color:var(--red)">20 мая 2026</div><div class="ev-text"><div class="t">НДС — уплата</div><div class="s">НДС за 1 кв. 2026 (1/3)</div></div><span class="badge err" style="margin-left:auto">Просрочен</span></div>
+    <div class="event-row"><div class="ev-stripe" style="background:var(--yellow)"></div><div class="ev-date" style="color:var(--yellow)">25 мая 2026</div><div class="ev-text"><div class="t">НДС — декларация</div><div class="s">Декларация НДС за 1 квартал</div></div><span class="badge warn" style="margin-left:auto">Срочно</span></div>
+    <div class="event-row"><div class="ev-stripe" style="background:var(--yellow)"></div><div class="ev-date" style="color:var(--yellow)">28 мая 2026</div><div class="ev-text"><div class="t">Аванс УСН — Q1</div><div class="s">Авансовый платёж по УСН</div></div><span class="badge warn" style="margin-left:auto">Срочно</span></div>
+    <div class="event-row"><div class="ev-stripe" style="background:var(--blue)"></div><div class="ev-date" style="color:var(--blue)">30 июня 2026</div><div class="ev-text"><div class="t">6-НДФЛ — полугодие</div></div><span class="badge info" style="margin-left:auto">Скоро</span></div>
+    <div class="event-row"><div class="ev-stripe" style="background:var(--green)"></div><div class="ev-date" style="color:var(--green)">30 апр 2026</div><div class="ev-text"><div class="t">6-НДФЛ Q1 / РСВ Q1</div></div><span class="badge ok" style="margin-left:auto">✓ Готово</span></div>
+  </div>
+
+  <div class="screen" id="s7">
+    <h1>Настройки</h1>
+    <div class="card settings-section"><h3>1С — Подключение</h3><div class="form-row"><span class="form-lbl">OData URL</span><input type="text" value="http://localhost/1c/odata/standard.odata"></div><div class="form-row"><span class="form-lbl">Пользователь</span><input type="text" value="Администратор"></div><div class="form-row"><span class="form-lbl">Пароль</span><input type="password" value="password"></div><button class="btn btn-secondary" style="margin-top:8px">Проверить подключение</button></div>
+    <div class="card settings-section"><h3>AI — Модель</h3><div class="form-row"><span class="form-lbl">Anthropic Key</span><input type="password" placeholder="sk-ant-..."></div><div class="form-row"><span class="form-lbl">OpenAI Key</span><input type="password" placeholder="sk-..."></div><div class="form-row"><span class="form-lbl">Модель</span><select style="background:#1E2436;border:1px solid var(--border);color:#F1F5F9;padding:8px;border-radius:8px;width:100%"><option>claude-sonnet-4-6 (рекомендуется)</option><option>claude-opus-4-7</option><option>gpt-4.1</option></select></div></div>
+    <div class="card settings-section"><h3>Голос — STT / TTS</h3><div class="form-row"><span class="form-lbl">Whisper</span><select style="background:#1E2436;border:1px solid var(--border);color:#F1F5F9;padding:8px;border-radius:8px;width:100%"><option>medium (быстро)</option><option>large-v3 (качество)</option></select></div><div style="display:flex;gap:10px;margin-top:8px"><button class="btn btn-secondary">🎤 Тест микрофона</button><button class="btn btn-secondary">🔊 Тест голоса</button></div></div>
+    <div class="card settings-section"><h3>Telegram</h3><div class="form-row"><span class="form-lbl">Bot Token</span><input type="password" placeholder="1234567890:AAF..."></div><div class="form-row"><span class="form-lbl">SOCKS5 прокси</span><input type="text" placeholder="socks5://user:pass@host:1080"></div><p style="font-size:12px;color:var(--yellow);margin:8px 0">⚠️ Telegram блокируется в РФ — укажите SOCKS5 прокси</p><button class="btn btn-secondary">Тестовое сообщение</button></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn btn-secondary">Сбросить</button><button class="btn btn-primary">Сохранить настройки</button></div>
+  </div>
+
+  <div class="screen" id="s8">
+    <h1>Личный кабинет</h1>
+    <div class="grid2" style="margin-bottom:16px">
+      <div class="card"><div style="font-size:11px;color:var(--muted);margin-bottom:4px">Компания</div><div style="font-size:18px;font-weight:700;margin-bottom:12px">ООО "Ромашка"</div><table style="font-size:13px"><tr><td style="color:var(--muted);padding:4px 0">ИНН</td><td>7712345678</td></tr><tr><td style="color:var(--muted);padding:4px 0">КПП</td><td>771201001</td></tr><tr><td style="color:var(--muted);padding:4px 0">Режим</td><td>ОСНО + НДС</td></tr></table><button class="btn btn-secondary" style="margin-top:12px">Редактировать</button></div>
+      <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><div style="font-size:11px;color:var(--muted)">Подписка</div><span class="badge info">БИЗНЕС</span></div><div style="font-size:20px;font-weight:700;margin-bottom:8px">Тариф: БИЗНЕС</div><div class="progress"><div class="progress-bar"></div></div><div style="font-size:12px;color:var(--muted);margin-bottom:14px">Осталось 19 дней (до 01.06.2026)</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-primary">💳 Продлить</button><button class="btn btn-secondary">📄 Счёт</button><button class="btn btn-secondary">💰 Картой</button><button class="btn btn-secondary">📱 СБП</button></div></div>
+    </div>
+    <h2 style="font-size:15px;font-weight:600;margin-bottom:14px">Тарифы</h2>
+    <div class="plans">
+      <div class="plan-card"><div style="font-weight:700;font-size:16px">Старт</div><div class="price">2 900 ₽/мес</div><div class="feat yes">✓ 1 компания · ИП/УСН</div><div class="feat yes">✓ 1 пользователь</div><div class="feat">✗ Голосовой ввод</div><div class="feat">✗ Telegram-бот</div><button class="btn btn-secondary" style="width:100%;margin-top:14px">Выбрать</button></div>
+      <div class="plan-card current"><div style="font-weight:700;font-size:16px">Бизнес</div><div class="price">5 900 ₽/мес</div><div class="feat yes">✓ 1 компания · ООО ОСНО</div><div class="feat yes">✓ До 3 пользователей</div><div class="feat yes">✓ Голосовой ввод</div><div class="feat">✗ Telegram-бот</div><button class="btn btn-secondary" style="width:100%;margin-top:14px;opacity:.5">Текущий</button></div>
+      <div class="plan-card"><div style="font-weight:700;font-size:16px">Корпорат</div><div class="price">12 900 ₽/мес</div><div class="feat yes">✓ До 5 компаний</div><div class="feat yes">✓ Безлимит пользователей</div><div class="feat yes">✓ Голос + Telegram</div><div class="feat yes">✓ API доступ</div><button class="btn btn-primary" style="width:100%;margin-top:14px">Выбрать</button></div>
+    </div>
+    <div class="card"><h2 style="font-size:15px;font-weight:600;margin-bottom:12px">История платежей</h2><table><tr><th>Дата</th><th>Тариф</th><th>Сумма</th><th>Статус</th></tr><tr><td>01.05.2026</td><td>Бизнес 1 мес</td><td>5 900 ₽</td><td><span class="badge ok">Оплачен</span></td></tr><tr><td>01.04.2026</td><td>Бизнес 1 мес</td><td>5 900 ₽</td><td><span class="badge ok">Оплачен</span></td></tr></table></div>
+  </div>
+</div>
+</div>
+
+<nav class="mob-nav">
+  <div class="mob-nav-inner">
+    <button class="mob-btn active" onclick="show(0,this)"><span class="ic">🏠</span>Главная</button>
+    <button class="mob-btn" onclick="show(1,this)"><span class="ic">💬</span>Чат</button>
+    <button class="mob-btn" onclick="show(2,this)"><span class="ic">📄</span>Доки</button>
+    <button class="mob-btn" onclick="show(3,this)"><span class="ic">📊</span>Отчёты</button>
+    <button class="mob-btn" onclick="show(4,this)"><span class="ic">🏦</span>Банк</button>
+    <button class="mob-btn" onclick="show(5,this)"><span class="ic">👥</span>Клиенты</button>
+    <button class="mob-btn" onclick="show(6,this)"><span class="ic">📅</span>Кал.</button>
+    <button class="mob-btn" onclick="show(8,this)"><span class="ic">👤</span>Кабинет</button>
+  </div>
+</nav>
+
+<script>
+function show(i,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+i).classList.add('active');
+  document.querySelectorAll('.nav-btn,.mob-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  window.scrollTo(0,0);
+}
+function sendMsg(){
+  const inp=document.getElementById('chat-in');
+  const text=inp.value.trim();
+  if(!text)return;
+  const msgs=document.getElementById('msgs');
+  const ub=document.createElement('div');
+  ub.className='bubble user';ub.textContent=text;msgs.appendChild(ub);
+  inp.value='';
+  setTimeout(()=>{
+    const bb=document.createElement('div');
+    bb.className='bubble bot';
+    bb.innerHTML='✅ Понял: <b>"'+text+'"</b><br><br>В реальном приложении здесь ответ AI-бухгалтера на основе данных из вашей 1С.';
+    msgs.appendChild(bb);msgs.scrollTop=msgs.scrollHeight;
+  },900);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+</script>
+</body>
+</html>
